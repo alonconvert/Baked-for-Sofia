@@ -6,7 +6,18 @@
       "Bash(mv baked-for-sofia/.* .)",
       "Bash(rmdir baked-for-sofia:*)",
       "Bash(npx shadcn@latest init -y)",
-      "Bash(npx shadcn@latest init --defaults)"
+      "Bash(npx shadcn@latest init --defaults)",
+      "Bash(npx shadcn@latest add input label card textarea -y)",
+      "Bash(mkdir -p ~/.claude/skills)",
+      "Bash(unzip -o ~/Downloads/asset-prompt-gen.skill -d ~/.claude/skills/asset-prompt-gen/)",
+      "Read(//Users/alonmoshe/Downloads/**)",
+      "Bash(unzip -o ~/Downloads/\"asset-prompt-gen \\(1\\).skill\" -d ~/.claude/skills/asset-prompt-gen/)",
+      "Bash(mv ~/.claude/skills/asset-prompt-gen/asset-prompt-gen/* ~/.claude/skills/asset-prompt-gen/)",
+      "Bash(rm -rf ~/.claude/skills/asset-prompt-gen/asset-prompt-gen)",
+      "Read(//Users/alonmoshe/.claude/skills/asset-prompt-gen/**)",
+      "Skill(firecrawl-scrape)",
+      "Skill(firecrawl-scrape:*)",
+      "Bash(npm list:*)"
     ]
   }
 }

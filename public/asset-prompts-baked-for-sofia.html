@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baked for Sofia — AI Asset Prompt Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--bg4:#22222e;
+  --gold:#c8956c;--gold-dim:#a87450;--gold-bright:#e0b08a;
+  --text:#e8e4df;--text-dim:#8a8690;--text-muted:#5a5660;
+  --border:#2a2a36;--border-light:#3a3a48;
+  --red:#c26d6d;--green:#7dab8a;--blue:#7d9bc2;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* ---- HEADER ---- */
+.header{text-align:center;padding:2.5rem 1.5rem 1.5rem;border-bottom:1px solid var(--border)}
+.header h1{font-size:2rem;font-weight:700;letter-spacing:-.03em;color:var(--gold)}
+.header h1 span{color:var(--text);font-weight:400}
+.header p.sub{color:var(--text-dim);font-size:.85rem;margin-top:.4rem;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.brand-line{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:.75rem;flex-wrap:wrap}
+.brand-tag{background:var(--bg3);border:1px solid var(--border);padding:.2rem .65rem;border-radius:100px;font-size:.7rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+
+/* ---- TABS ---- */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex:none;padding:.85rem 1.4rem;font-size:.78rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);background:transparent;border:none;cursor:pointer;position:relative;white-space:nowrap;transition:color .2s}
+.tab-btn:hover{color:var(--text-dim)}
+.tab-btn.active{color:var(--gold)}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold)}
+
+.sub-tab-bar{display:flex;gap:.5rem;padding:.75rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border)}
+.sub-tab{padding:.4rem 1rem;font-size:.72rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);background:var(--bg3);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .2s}
+.sub-tab:hover{border-color:var(--border-light);color:var(--text-dim)}
+.sub-tab.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+
+/* ---- PROMPT CARD ---- */
+.prompt-panel{display:none;padding:1.5rem}
+.prompt-panel.visible{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:960px;margin:0 auto}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.5rem}
+.card-title{font-size:.95rem;font-weight:600;color:var(--text)}
+.card-title .type-badge{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.65rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-left:.5rem;vertical-align:middle}
+.type-assembled .type-badge{background:#c8956c22;color:var(--gold)}
+.type-exploded .type-badge{background:#7d9bc222;color:var(--blue)}
+.type-video .type-badge{background:#7dab8a22;color:var(--green)}
+.copy-btn{display:flex;align-items:center;gap:.4rem;padding:.4rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-size:.72rem;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Space Grotesk',sans-serif}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold)}
+.copy-btn.copied{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.copy-btn svg{width:14px;height:14px}
+
+.prompt-body{padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word}
+
+.meta-row{display:flex;flex-wrap:wrap;gap:.5rem;padding:.75rem 1.25rem;border-top:1px solid var(--border);background:var(--bg3)}
+.meta-chip{display:flex;align-items:center;gap:.3rem;padding:.2rem .6rem;background:var(--bg);border:1px solid var(--border);border-radius:100px;font-size:.65rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+.meta-chip .label{color:var(--text-muted)}
+.meta-chip .value{color:var(--gold-bright)}
+
+.negative-section{padding:1rem 1.25rem;border-top:1px solid var(--border)}
+.neg-title{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--red);margin-bottom:.4rem}
+.neg-text{font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.6;color:var(--text-muted)}
+
+/* ---- CONFETTI CANVAS ---- */
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+
+/* ---- FOOTER ---- */
+.footer{text-align:center;padding:2rem 1.5rem;border-top:1px solid var(--border);margin-top:1rem}
+.footer p{font-size:.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;letter-spacing:.03em}
+.footer p span{color:var(--gold-dim)}
+
+/* ---- RESPONSIVE ---- */
+@media(max-width:700px){
+  html{font-size:14px}
+  .tab-btn{padding:.7rem 1rem;font-size:.72rem}
+  .prompt-body{font-size:.75rem;padding:1rem}
+  .card-header{padding:.8rem 1rem}
+  .meta-row{padding:.6rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="header">
+  <h1>Baked for Sofia <span>/ Asset Prompts</span></h1>
+  <p class="sub">Cinematic AI image & video prompts for Melbourne's artisan wholesale bakery</p>
+  <div class="brand-line">
+    <span class="brand-tag">Warm Ambers</span>
+    <span class="brand-tag">Raw Textures</span>
+    <span class="brand-tag">Flour Dust</span>
+    <span class="brand-tag">Rustic-Yet-Modern</span>
+  </div>
+</div>
+
+<div class="tab-bar" id="mainTabs"></div>
+<div class="sub-tab-bar" id="subTabs"></div>
+<div id="promptContainer"></div>
+
+<div class="footer">
+  <p>Generated by <span>Asset Prompt Gen</span> &middot; Prompts work with any AI image/video generator</p>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const SETS = [
+  {
+    id:"hero",
+    label:"Hero Banner",
+    prompts:{
+      assembled:{
+        title:"Hero Banner — Assembled",
+        type:"assembled",
+        body:`A cinematic overhead three-quarter angle photograph of an artisan bakery spread on a flour-dusted dark walnut table. Center: a large round golden-crusted sourdough loaf with a deep ear and blistered crust, flanked by two perfectly laminated croissants dusted with powdered sugar, a braided challah with deep amber egg-wash sheen, and three charcoal brioche burger buns with a matte-black crumb visible where one is torn open. Scattered: raw wheat stalks, a linen couche, a wooden lame. Key light from a large softbox at camera-upper-left (3200 K tungsten gel) casting long warm shadows to the lower-right; fill from a silver bounce card camera-right at one stop under. Volumetric flour dust particles caught in a narrow shaft of back-light from a bare bulb at upper-right creating a halo glow. Shot on a medium-format 80 mm lens at f/4, shallow depth of field with the sourdough tack-sharp and edges gently falling off. Warm palette: amber, burnt sienna, charcoal, cream. Mood: abundant, craft-proud, inviting.`,
+        aspect:"16:9",
+        models:"Midjourney v6, DALL-E 3, Firefly, Flux Pro",
+        tags:"food photography, overhead, artisan, cinematic, warm light",
+        negative:"Plastic packaging, modern kitchen appliances, neon colors, synthetic textures, text overlays, watermarks, blurry center subject, oversaturated greens, stock-photo feel, perfect symmetry, clipart style."
+      },
+      exploded:{
+        title:"Hero Banner — Exploded / Deconstructed",
+        type:"exploded",
+        body:`A dramatic deconstructed birds-eye photograph on a matte charcoal slate surface, items spaced in a deliberate grid with generous negative space between each. Top row left-to-right: a half-sliced sourdough showing open crumb with irregular alveoli, a small pile of raw rye flour, a ceramic bowl of poolish starter with visible bubbles. Middle row: a single perfect croissant cross-sectioned to reveal honeycomb lamination layers, two charcoal buns — one whole and one halved revealing the soft dark interior — a pat of golden European butter. Bottom row: a braided challah segment showing the rope structure, scattered sesame seeds, a pinch of flaky sea salt, a vintage brass dough scraper. Lit by a single large octabox directly overhead at 3400 K, nearly shadowless with subtle edge shadows for depth; a strip softbox behind at low power adding a rim highlight on each element. Shot at 50 mm equivalent, f/8 for deep focus, every element tack-sharp. Color: muted earth tones, desaturated amber, warm grey. Mood: curated, editorial, systematic.`,
+        aspect:"1:1",
+        models:"Midjourney v6, DALL-E 3, Ideogram, Flux Pro",
+        tags:"flat lay, deconstructed, editorial, ingredients, minimal",
+        negative:"Cluttered composition, overlapping items, bright neon, plastic containers, blurry elements, cartoon style, 3D render look, excessive vignette, heavy HDR, text."
+      },
+      video:{
+        title:"Hero Banner — Video Transition",
+        type:"video",
+        body:`Camera starts in extreme macro on raw sourdough dough surface — visible gluten strands stretching as the dough is gently pulled apart, warm 3200 K tungsten key light from left casting deep texture shadows across the elastic webbing. Slow 2-second pull-back to reveal hands shaping the boule on a floured wooden bench. Camera continues pulling back smoothly over 3 seconds, rotating 45 degrees to reveal the full bakery table spread: golden sourdough, charcoal buns, laminated croissants, braided challah, all arranged in the hero composition. Flour dust particles drift through a shaft of warm backlight. Final 2 seconds: camera settles at the three-quarter overhead hero angle as a hand gently places the last croissant into position. Throughout: shallow depth transitions from macro f/2.8 to hero f/4. Anamorphic lens flare on backlight. Warm amber grade, lifted shadows. 24 fps cinematic motion blur. Sound design: soft dough stretching, gentle thuds on wood, ambient oven hum.`,
+        aspect:"16:9 (video)",
+        models:"Runway Gen-3, Pika, Sora, Kling",
+        tags:"cinematic video, macro to wide, transition, bakery, warm",
+        negative:"Jerky camera movement, jump cuts, artificial speed ramps, synthetic music, stock footage feel, flat lighting, overexposed highlights, digital noise, text overlays."
+      }
+    }
+  },
+  {
+    id:"sourdough",
+    label:"Sourdough Collection",
+    prompts:{
+      assembled:{
+        title:"Sourdough Collection — Assembled",
+        type:"assembled",
+        body:`A moody still-life photograph of five sourdough loaves arranged in a loose crescent on a raw reclaimed-timber surface. From left: a pale white sourdough with a bold single-slash ear curling upward, a dark rye with cracked floury top, a seeded multigrain with visible sunflower and pumpkin seeds pressed into the crust, a kalamata olive loaf with purple-black olive pieces breaking through the crust, and a classic boule scored in a crosshatch wheat-sheaf pattern. Key light: a single large parabolic reflector from camera-right at 3000 K, raking across the crusts at a 20-degree angle to exaggerate every blister and ridge of crust texture. Deep shadows on the left side, filled only by ambient bounce off a warm terracotta wall behind. Fine flour dust visible in the air. Shot on an 85 mm prime at f/3.5, focus on the center multigrain loaf with graceful bokeh on the outer loaves. Palette: burnt umber, deep gold, charcoal, flour white. Mood: reverent, craft-obsessed, warm.`,
+        aspect:"16:9",
+        models:"Midjourney v6, DALL-E 3, Firefly, Flux Pro",
+        tags:"sourdough, artisan bread, dramatic light, still life, texture",
+        negative:"Sliced sandwich bread, plastic bags, bright white background, flat even lighting, cartoon style, oversaturated, text, watermark, blurry subject, modern kitchen setting."
+      },
+      exploded:{
+        title:"Sourdough Collection — Exploded / Deconstructed",
+        type:"exploded",
+        body:`A meticulously arranged overhead photograph on a dark stone surface showing the anatomy of sourdough craft. Top section: three different scoring patterns carved into raw dough — single ear slash, crosshatch, spiral — each on a small floured peel. Center: a loaf cut cleanly in half revealing the open crumb structure with wild irregular holes, the crust a deep mahogany ring around ivory interior. Below the halved loaf: a glass jar of active levain starter with bubbles visible through the glass, a small bowl of stone-ground rye flour, a mound of bread flour, flaky sea salt crystals in a ceramic pinch bowl, and a vintage curved-blade lame with a fresh razor. Bottom: three crust close-up fragments showing different textures — blistered white, cracked rye, seed-studded multigrain. Lit with a large overhead softbox at 3400 K, a small hair light from behind the starter jar creating a glow through the glass. 60 mm lens at f/7.1 for full sharpness. Muted warm palette. Mood: educational, obsessive, beautiful.`,
+        aspect:"4:5",
+        models:"Midjourney v6, DALL-E 3, Ideogram, Flux Pro",
+        tags:"flat lay, bread anatomy, sourdough, crumb shot, ingredients",
+        negative:"Cluttered frame, plastic tools, bright colors, synthetic look, 3D render, excessive HDR, blurry, cartoonish, text overlay, stock photo composition."
+      },
+      video:{
+        title:"Sourdough Collection — Video Transition",
+        type:"video",
+        body:`Opens in darkness. A warm 3000 K practial bulb fades up to reveal an extreme close-up of a razor lame blade touching the taut skin of a proofed sourdough boule. The blade draws slowly through the surface — the dough splits open revealing the pale interior, a satisfying clean line. Camera holds on the scoring for 2 seconds, then match-cuts to the same loaf now baked: the ear has bloomed dramatically, deep amber and blistered. Camera slowly orbits 180 degrees around the baked loaf at table height, the raking side-light from a parabolic dish at camera-left sculpting every ridge of the crust. At the halfway orbit point, a hand enters and tears the loaf open with a deep crackle — steam wisps rise from the exposed crumb. Camera pushes into the crumb structure in a slow macro zoom, the irregular holes and glossy gelatinized walls filling the frame. Warm amber color grade throughout, crushed blacks, gentle film grain. 24 fps, smooth gimbal movement. Sound: blade on dough, crust crackling, soft ambient bakery hum.`,
+        aspect:"16:9 (video)",
+        models:"Runway Gen-3, Pika, Sora, Kling",
+        tags:"sourdough, scoring, crust, macro, cinematic video, ASMR",
+        negative:"Fast cuts, shaky cam, cold lighting, generic stock footage, flat color, digital artifacts, synthetic sounds, text overlays."
+      }
+    }
+  },
+  {
+    id:"buns",
+    label:"Burger Buns Spectrum",
+    prompts:{
+      assembled:{
+        title:"Burger Buns Spectrum — Assembled",
+        type:"assembled",
+        body:`A clean graphic photograph of four brioche burger buns arranged in a perfect row on a pale marble slab, viewed from a straight-on 15-degree elevated angle. Left to right: jet-black charcoal bun with a subtle sheen, deep beetroot-red bun with a matte velvety surface, vibrant matcha-green bun with fine speckles visible, and a classic golden brioche with glossy egg-wash dome. Each bun is split horizontally with the top half slightly offset to reveal the colorful crumb interior matching the exterior hue. Behind each bun, a small pile of its key coloring ingredient — activated charcoal powder, beetroot powder, matcha powder, and egg yolks. Key light: a large rectangular softbox from directly above and slightly behind at 4000 K (neutral-warm), creating clean even illumination with soft shadows falling forward. A white V-flat from below-camera provides gentle fill. Shot on a 70 mm lens at f/5.6 for clean sharpness edge to edge. Palette: the four bun colors pop against the neutral marble. Mood: modern, clean, appetizing, color-story.`,
+        aspect:"16:9",
+        models:"Midjourney v6, DALL-E 3, Firefly, Flux Pro",
+        tags:"burger buns, color spectrum, brioche, clean, graphic, food",
+        negative:"Messy backgrounds, dark moody lighting, blurry, plastic wrap, generic bread rolls, oversaturated, cartoon, 3D render, text, watermark."
+      },
+      exploded:{
+        title:"Burger Buns Spectrum — Exploded / Deconstructed",
+        type:"exploded",
+        body:`An overhead flat-lay on a clean matte-white surface showing the burger bun creation process deconstructed into a grid. Top row: four small bowls containing raw coloring agents — black charcoal powder, magenta beetroot powder, emerald matcha powder, golden egg yolk — each casting a colored reflection on the white surface. Second row: four balls of raw colored dough at the same stage of shaping, each showing the distinct hue worked through the brioche matrix, visible butter marbling. Third row: four baked buns from directly above, the domed tops showing the color gradient from edge to center, sesame seeds scattered on the golden one only. Bottom row: four cross-sections sliced cleanly to show the interior crumb — charcoal with an almost purple-black interior, beetroot with pink-to-red gradient, matcha with speckled sage-green, golden with classic rich yellow brioche crumb. Lit by a massive overhead octabox at 4200 K for flat, even, editorial illumination. 50 mm at f/8. Color: the bun hues against pure white create a Pantone-swatch effect. Mood: systematic, satisfying, design-forward.`,
+        aspect:"1:1",
+        models:"Midjourney v6, DALL-E 3, Ideogram, Flux Pro",
+        tags:"flat lay, color grid, brioche process, editorial, minimal",
+        negative:"Dark backgrounds, cluttered, uneven spacing, blurry, artificial look, plastic, heavy shadows, text overlays, stock photo style."
+      },
+      video:{
+        title:"Burger Buns Spectrum — Video Transition",
+        type:"video",
+        body:`Camera starts tight on a baker's hands kneading plain brioche dough on a marble surface, lit by clean overhead 4000 K softbox. The hands divide the dough into four portions. Time-lapse at 8x speed: each portion gets its coloring agent folded in — the first turns jet black as charcoal is incorporated, the second blooms red with beetroot, the third shifts to green with matcha, the fourth stays golden. Brief real-time moment: all four colored dough balls sit in a row, glistening. Match-cut to four baked buns emerging from a deck oven, steam billowing — camera at oven-mouth level catching the heat shimmer. Smooth dolly to the finished four buns on the marble slab, camera slowly lowering to the hero angle as a hand splits each one in sequence, revealing the colored interiors. Final frame holds on all four split buns in the graphic lineup. Warm-neutral grade, clean highlights, minimal shadows. 24 fps with smooth slow-motion on the splitting moments at 60 fps. Sound: dough slapping marble, oven door, soft crackle of crust.`,
+        aspect:"16:9 (video)",
+        models:"Runway Gen-3, Pika, Sora, Kling",
+        tags:"time-lapse, color reveal, brioche, process, cinematic video",
+        negative:"Jerky timelapse, poor color transition, flat lighting, jump cuts, shaky camera, cold blue tones, stock footage, text overlays, digital artifacts."
+      }
+    }
+  },
+  {
+    id:"pastry",
+    label:"Pastry & Sweet",
+    prompts:{
+      assembled:{
+        title:"Pastry & Sweet — Assembled",
+        type:"assembled",
+        body:`A warm indulgent photograph of a pastry display on a weathered brass tray atop a linen-draped wooden table, early morning window light streaming from camera-left. Center: a pile of three golden croissants with visible lamination layers flaking at the edges, one torn open showing the honeycomb interior. To the left: an almond croissant topped with toasted sliced almonds and a heavy dusting of powdered sugar, beside it a chocolate croissant with dark chocolate oozing from one end. Right side: two cinnamon scrolls with cream-cheese glaze pooling in the spiral grooves, and a sliced chocolate babka revealing the swirled chocolate-dough layers. Background: a rustic danish with pastry cream and fresh berries slightly out of focus. Key light is natural window light (golden hour equivalent, 3000 K) diffused through a sheer curtain, supplemented by a small gold reflector from camera-right filling the shadows to a 2:1 ratio. Shot on a 50 mm at f/2.8, focus on the torn croissant with creamy bokeh on the edges. Color: honey gold, chocolate brown, cream white, cinnamon. Mood: weekend morning, abundant, irresistible.`,
+        aspect:"4:3",
+        models:"Midjourney v6, DALL-E 3, Firefly, Flux Pro",
+        tags:"pastry, croissant, morning light, indulgent, warm, bakery",
+        negative:"Artificial neon light, plastic display cases, cold blue tones, packaged goods, cartoon, 3D render, text, watermark, flat composition, oversaturated."
+      },
+      exploded:{
+        title:"Pastry & Sweet — Exploded / Deconstructed",
+        type:"exploded",
+        body:`An editorial overhead photograph on a dark walnut board showing pastry construction deconstructed. Top left: a block of cold European butter beside a mound of sifted flour and a cracked egg, the raw lamination ingredients. Top right: a rolled-out dough sheet with visible butter layer peeking through a fold — the détrempe mid-turn. Center: five distinct cross-sections arranged in a row — plain croissant showing perfect honeycomb layers, almond croissant with frangipane fill visible, chocolate croissant with dark ganache core, cinnamon scroll spiral from above, and chocolate babka with its marbled swirl pattern. Below: individual garnish components — a small bowl of toasted almond slices, dark chocolate chips, ground cinnamon with a vanilla pod, cream cheese icing in a ceramic ramekin, and a fine-mesh sieve holding powdered sugar mid-dusting. Lit by a rectangular softbox at upper-right at 3200 K for warm directional light with moderate shadows falling lower-left; a white card from lower-left at two stops under for fill. 50 mm at f/6.3. Color: warm wood tones, pastry golds, chocolate darks. Mood: methodical, appetizing, craft-revealed.`,
+        aspect:"1:1",
+        models:"Midjourney v6, DALL-E 3, Ideogram, Flux Pro",
+        tags:"flat lay, pastry anatomy, cross-section, editorial, ingredients",
+        negative:"Messy layout, overlapping items, neon, plastic, blurry elements, stock photo, 3D render, cartoon, text overlays, cold tones."
+      },
+      video:{
+        title:"Pastry & Sweet — Video Transition",
+        type:"video",
+        body:`Opens with an extreme close-up of cold butter being folded into croissant dough — the lamination process in slow motion at 120 fps, lit by warm 3200 K key light from camera-left, every butter layer visible between folds. Camera tilts up as a rolling pin compresses the layers (real-time), then match-cuts to the same dough now shaped: a row of croissant triangles being rolled toward the point. Time-lapse: the shaped croissants proof and expand over 2 hours compressed to 3 seconds, the dough visibly puffing. Match-cut to the oven: croissants baking through the glass door, browning from pale to deep gold. Camera pulls back as the oven door opens and a tray of perfect golden croissants emerges, steam rising into warm backlight from a practical bulb above. Final shot: a hand tears a croissant in half in slow motion, the laminated layers separating with a shattering flake, wisps of steam and butter-scented air implied by the soft haze. Warm amber grade, gentle film grain, soft vignette. 24 fps base with 120 fps slow-motion moments. Sound: butter crunching, rolling pin on marble, oven hum, the crisp shatter of pastry.`,
+        aspect:"16:9 (video)",
+        models:"Runway Gen-3, Pika, Sora, Kling",
+        tags:"lamination, croissant process, slow motion, cinematic, ASMR",
+        negative:"Fast cuts, cold lighting, shaky footage, synthetic textures, generic stock footage, flat color grade, digital noise, text overlays."
+      }
+    }
+  },
+  {
+    id:"atmosphere",
+    label:"Bakery Atmosphere",
+    prompts:{
+      assembled:{
+        title:"Bakery Atmosphere — Assembled",
+        type:"assembled",
+        body:`A documentary-style wide photograph of a working artisan bakery interior during the early morning bake, 4:00 AM energy. A long wooden bench stretches across the frame covered in flour-dusted sourdough boules at various stages — some scored and ready, some proofing in linen-lined bannetons. A baker in the mid-ground (back to camera, wearing a flour-dusted navy apron) slides a peel loaded with dough into a glowing deck oven, the oven mouth casting a fierce orange glow across the scene. Foreground: a wire cooling rack loaded with fresh-from-oven loaves, steam still rising. Background: metal shelving stacked with bannetons and bags of flour, slightly out of focus. Volumetric flour dust hangs in the air, caught in the warm light. Lighting: the oven provides a practical key light (2800 K deep amber) from center-right; overhead industrial pendant lamps at 3500 K provide general fill; a shaft of early dawn blue light enters from a high window at camera-left creating a cool-warm contrast. Shot at 35 mm wide angle, f/2.8, focus on the mid-ground baker. Palette: deep amber, flour white, iron grey, dawn blue. Mood: authentic, hardworking, warm, alive.`,
+        aspect:"16:9",
+        models:"Midjourney v6, DALL-E 3, Firefly, Flux Pro",
+        tags:"bakery interior, documentary, oven glow, flour dust, atmosphere",
+        negative:"Spotlessly clean kitchen, retail storefront, customers, bright even lighting, posed model, cartoon, 3D render, text, watermark, cold sterile look."
+      },
+      exploded:{
+        title:"Bakery Atmosphere — Exploded / Deconstructed",
+        type:"exploded",
+        body:`An editorial grid-style composite photograph — nine square frames arranged 3x3, each capturing a distinct moment or detail of bakery life, unified by a warm 3200 K amber color grade and documentary grain. Top row: (1) extreme close-up of hands kneading dough, flour puffing upward, tendons visible; (2) a row of bannetons with proofed dough, spiraling flour patterns on top; (3) a digital thermometer piercing a loaf reading 96 degrees C. Middle row: (4) the oven interior through the glass, loaves mid-bake with golden tops and oven spring visible; (5) a wide flour-cloud explosion frozen mid-air as a baker slaps dough on the bench; (6) fresh scoring marks on raw dough, the blade having just passed, the cut gaping open. Bottom row: (7) a tower of stacked bread crates, loaves cooling vertically; (8) a worn wooden peel with decades of flour and char patina; (9) the first light of dawn through a bakery window silhouetting stacked loaves. Each frame shot at 50 mm, f/2.8-f/4 range. Consistent warm tone with slightly lifted blacks. Mood: story-told-in-fragments, intimate, honest, craft-celebrated.`,
+        aspect:"1:1",
+        models:"Midjourney v6, DALL-E 3, Ideogram, Flux Pro",
+        tags:"photo grid, bakery details, documentary, craft, nine frames",
+        negative:"Posed shots, clean studio, retail setting, customers, cold blue tones, cartoon, 3D, text overlays, watermarks, over-processed HDR."
+      },
+      video:{
+        title:"Bakery Atmosphere — Video Transition",
+        type:"video",
+        body:`Opens on black screen. Sound first: the deep thud of dough hitting a wooden bench. Image fades in on hands shaping a boule in extreme close-up, flour dusting upward in slow motion, lit by a single warm practical pendant at 3000 K directly above. Camera slowly pulls back over 4 seconds to reveal the full bakery bench — a dozen loaves in progress. A baker crosses the frame left-to-right carrying a loaded peel, creating a brief silhouette wipe transition. New angle: camera mounted low at oven-mouth level, the baker slides dough inside and the oven glow washes over the lens (lens flare, warm amber). Quick match-cut to an interior oven time-lapse: dough rising and browning over 30 minutes compressed to 4 seconds. Cut to the oven door opening — billowing steam fills the frame. Camera follows a loaf from oven to cooling rack in a single tracking shot, passing through a shaft of dawn light from a high window. Final frame: a wide shot of the bakery at first light, loaves stacked, flour settling in the air, the baker taking a brief pause with coffee. Warm grade throughout, crushed blacks, gentle grain. 24 fps, 120 fps for flour and steam moments. Sound: dough, oven roar, crust crackling, dawn birds faintly outside.`,
+        aspect:"21:9 (cinematic video)",
+        models:"Runway Gen-3, Pika, Sora, Kling",
+        tags:"bakery documentary, dawn, oven, steam, cinematic, warm",
+        negative:"Shaky handheld, quick MTV-style cuts, cold grading, generic stock footage, posed actors, bright retail lighting, text overlays, digital artifacts, synthetic sounds."
+      }
+    }
+  }
+];
+
+// ============================================================
+// CONFETTI ENGINE (canvas-based, zero dependencies)
+// ============================================================
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+let confettiParticles = [];
+let animating = false;
+
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+
+function randomRange(a,b){return Math.random()*(b-a)+a}
+
+function spawnConfetti(x,y){
+  const colors=['#c8956c','#e0b08a','#a87450','#e8e4df','#7dab8a','#c26d6d','#7d9bc2'];
+  for(let i=0;i<80;i++){
+    confettiParticles.push({
+      x,y,
+      vx:randomRange(-8,8),
+      vy:randomRange(-14,-4),
+      w:randomRange(4,10),
+      h:randomRange(3,6),
+      color:colors[Math.floor(Math.random()*colors.length)],
+      rotation:randomRange(0,Math.PI*2),
+      rotSpeed:randomRange(-.15,.15),
+      gravity:.35,
+      life:1,
+      decay:randomRange(.008,.018)
+    });
+  }
+  if(!animating){animating=true;animateConfetti()}
+}
+
+function animateConfetti(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiParticles.forEach(p=>{
+    p.x+=p.vx;
+    p.vy+=p.gravity;
+    p.y+=p.vy;
+    p.rotation+=p.rotSpeed;
+    p.life-=p.decay;
+    if(p.life<=0)return;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rotation);
+    ctx.globalAlpha=p.life;
+    ctx.fillStyle=p.color;
+    ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+    ctx.restore();
+  });
+  confettiParticles=confettiParticles.filter(p=>p.life>0);
+  if(confettiParticles.length>0){requestAnimationFrame(animateConfetti)}
+  else{animating=false;ctx.clearRect(0,0,canvas.width,canvas.height)}
+}
+
+// ============================================================
+// UI RENDERING
+// ============================================================
+const mainTabsEl = document.getElementById('mainTabs');
+const subTabsEl = document.getElementById('subTabs');
+const containerEl = document.getElementById('promptContainer');
+
+let activeSet = 0;
+let activeSub = 'assembled';
+
+const subLabels = {assembled:'Assembled',exploded:'Exploded',video:'Video'};
+
+function renderMainTabs(){
+  mainTabsEl.innerHTML='';
+  SETS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='tab-btn'+(i===activeSet?' active':'');
+    b.textContent=s.label;
+    b.onclick=()=>{activeSet=i;activeSub='assembled';renderMainTabs();renderSubTabs();renderPrompt()};
+    mainTabsEl.appendChild(b);
+  });
+}
+
+function renderSubTabs(){
+  subTabsEl.innerHTML='';
+  ['assembled','exploded','video'].forEach(k=>{
+    const b=document.createElement('button');
+    b.className='sub-tab'+(k===activeSub?' active':'');
+    b.textContent=subLabels[k];
+    b.onclick=()=>{activeSub=k;renderSubTabs();renderPrompt()};
+    subTabsEl.appendChild(b);
+  });
+}
+
+function renderPrompt(){
+  const data=SETS[activeSet].prompts[activeSub];
+  const typeClass = activeSub==='assembled'?'type-assembled':activeSub==='exploded'?'type-exploded':'type-video';
+  const badgeLabel = activeSub==='assembled'?'ASSEMBLED':activeSub==='exploded'?'EXPLODED':'VIDEO';
+
+  containerEl.innerHTML=`
+    <div class="prompt-panel visible">
+      <div class="card">
+        <div class="card-header ${typeClass}">
+          <div class="card-title">${data.title}<span class="type-badge">${badgeLabel}</span></div>
+          <button class="copy-btn" id="copyBtn" onclick="copyPrompt(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy prompt
+          </button>
+        </div>
+        <div class="prompt-body" id="promptText">${data.body}</div>
+        <div class="meta-row">
+          <div class="meta-chip"><span class="label">Aspect</span><span class="value">${data.aspect}</span></div>
+          <div class="meta-chip"><span class="label">Models</span><span class="value">${data.models}</span></div>
+          <div class="meta-chip"><span class="label">Tags</span><span class="value">${data.tags}</span></div>
+        </div>
+        <div class="negative-section">
+          <div class="neg-title">Negative Prompt</div>
+          <div class="neg-text">${data.negative}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function copyPrompt(btn){
+  const text=document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    const rect=btn.getBoundingClientRect();
+    spawnConfetti(rect.left+rect.width/2, rect.top+rect.height/2);
+    setTimeout(()=>{
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy prompt';
+    },2000);
+  });
+}
+
+renderMainTabs();
+renderSubTabs();
+renderPrompt();
+</script>
+</body>
+</html>

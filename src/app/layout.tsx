@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { dmSans } from "@/lib/fonts";
+import { dmSans, dmSerifDisplay } from "@/lib/fonts";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import "./globals.css";
@@ -23,10 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+    <html
+      lang="en"
+      className={`${dmSans.variable} ${dmSerifDisplay.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col relative">
         <Header />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 relative z-10">{children}</main>
         <Footer />
       </body>
     </html>
