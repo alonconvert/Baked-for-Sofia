@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { AnimatedSection } from "@/components/animated-section";
 
@@ -13,6 +14,7 @@ const categories = [
     gradient: "from-amber-50 to-orange-50",
     accentColor: "text-amber-700",
     borderHover: "hover:border-amber-300/60",
+    image: "/images/products/brioche-bun.webp",
   },
   {
     name: "Sandwich & Rolls",
@@ -22,6 +24,7 @@ const categories = [
     gradient: "from-yellow-50 to-amber-50",
     accentColor: "text-yellow-700",
     borderHover: "hover:border-yellow-300/60",
+    image: "/images/products/panini-roll.webp",
   },
   {
     name: "Something Different",
@@ -31,6 +34,7 @@ const categories = [
     gradient: "from-rose-50 to-pink-50",
     accentColor: "text-rose-700",
     borderHover: "hover:border-rose-300/60",
+    image: "/images/products/baguette.webp",
   },
   {
     name: "Sourdough",
@@ -40,6 +44,7 @@ const categories = [
     gradient: "from-orange-50 to-amber-50",
     accentColor: "text-orange-700",
     borderHover: "hover:border-orange-300/60",
+    image: "/images/products/white-sourdough.webp",
   },
   {
     name: "Jerusalem Bagels",
@@ -49,6 +54,7 @@ const categories = [
     gradient: "from-stone-100 to-amber-50",
     accentColor: "text-stone-700",
     borderHover: "hover:border-stone-300/60",
+    image: "/images/products/jerusalem-bagel-seeds.webp",
   },
   {
     name: "Fresh Baked Cakes",
@@ -58,6 +64,7 @@ const categories = [
     gradient: "from-purple-50 to-violet-50",
     accentColor: "text-purple-700",
     borderHover: "hover:border-purple-300/60",
+    image: "/images/products/basque-cheesecake.webp",
   },
   {
     name: "Pastry & Sweet",
@@ -67,6 +74,7 @@ const categories = [
     gradient: "from-pink-50 to-rose-50",
     accentColor: "text-pink-700",
     borderHover: "hover:border-pink-300/60",
+    image: "/images/products/croissant.webp",
   },
   {
     name: "Gluten Friendly",
@@ -76,6 +84,7 @@ const categories = [
     gradient: "from-emerald-50 to-green-50",
     accentColor: "text-emerald-700",
     borderHover: "hover:border-emerald-300/60",
+    image: "/images/products/gf-roll.webp",
   },
 ];
 
@@ -108,11 +117,14 @@ export function ProductCategories() {
                   className={`group rounded-2xl overflow-hidden bg-card border border-border/50 ${cat.borderHover} transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-black/5`}
                 >
                   <div
-                    className={`h-28 bg-gradient-to-br ${cat.gradient} flex items-center justify-center relative overflow-hidden`}
+                    className={`h-36 bg-gradient-to-br ${cat.gradient} flex items-center justify-center relative overflow-hidden`}
                   >
-                    <span className="text-3xl font-serif text-foreground/[0.06] group-hover:text-foreground/[0.12] transition-colors duration-300 text-center px-4">
-                      {cat.name}
-                    </span>
+                    <Image
+                      src={cat.image}
+                      alt={cat.name}
+                      fill
+                      className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                    />
                   </div>
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-2 mb-2">

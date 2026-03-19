@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { AnimatedSection } from "@/components/animated-section";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -42,9 +43,19 @@ export function AboutPreview() {
             </Link>
           </AnimatedSection>
 
-          {/* Stats and quote */}
+          {/* Image, Stats and quote */}
           <AnimatedSection direction="right" delay={0.2}>
             <div className="space-y-6">
+              {/* Product display image */}
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-border/30">
+                <Image
+                  src="/images/homepage/product-display.webp"
+                  alt="Baked for Sofia product display"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
               {/* Dramatic stats */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gradient-to-br from-warm to-cream rounded-2xl p-6 text-center border border-border/30">

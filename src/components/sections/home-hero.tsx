@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -43,8 +44,19 @@ function FlourParticle({ index }: { index: number }) {
 export function HomeHero() {
   return (
     <section className="relative min-h-dvh flex flex-col items-center justify-center overflow-hidden">
+      {/* Hero background image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/homepage/hero.webp"
+          alt=""
+          fill
+          className="object-cover opacity-15"
+          priority
+        />
+      </div>
+
       {/* Warm textured gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-warm via-cream to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-warm/90 via-cream/85 to-background" />
 
       {/* Subtle radial glow */}
       <div

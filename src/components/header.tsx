@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Instagram, Facebook } from "lucide-react";
@@ -40,9 +41,14 @@ export function Header() {
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-18 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-serif text-2xl tracking-tight text-foreground transition-colors group-hover:text-primary">
-              Baked for Sofia
-            </span>
+            <Image
+              src="/images/logo/bfs-logo.webp"
+              alt="Baked for Sofia"
+              width={180}
+              height={36}
+              className="transition-opacity group-hover:opacity-80"
+              priority
+            />
           </Link>
 
           <div className="hidden md:flex items-center gap-10">

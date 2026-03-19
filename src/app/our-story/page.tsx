@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatedSection } from "@/components/animated-section";
+import Image from "next/image";
 import {
   Sparkles,
   Target,
@@ -78,6 +79,14 @@ export default function OurStoryPage() {
     <>
       {/* Hero */}
       <section className="pt-32 pb-20 bg-gradient-to-b from-warm via-cream/50 to-background relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/homepage/bakery-detail.webp"
+            alt=""
+            fill
+            className="object-cover opacity-10"
+          />
+        </div>
         <div
           className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
@@ -162,23 +171,44 @@ export default function OurStoryPage() {
               <div className="absolute top-4 left-8 font-serif text-7xl text-primary/[0.06] leading-none">
                 &ldquo;
               </div>
-              <div className="relative">
-                <blockquote className="text-lg text-foreground/80 leading-relaxed italic mb-6 pt-8">
-                  Our dynamic industrial team is passionate about reaching new
-                  goals and driving our business forward. We work closely with
-                  our customers to create products that suit their business
-                  needs.
-                </blockquote>
+              <div className="relative flex flex-col sm:flex-row gap-8 items-center">
+                <div className="relative w-32 h-40 sm:w-40 sm:h-52 flex-shrink-0 rounded-2xl overflow-hidden">
+                  <Image
+                    src="/images/homepage/founder.jpg"
+                    alt="Dov & Immy Lachovich Marcus, Founders of Baked for Sofia"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <div>
-                  <p className="font-semibold text-foreground">
-                    Dov & Immy Lachovich Marcus
-                  </p>
-                  <p className="text-sm text-muted-foreground">Founders</p>
+                  <blockquote className="text-lg text-foreground/80 leading-relaxed italic mb-6 pt-4 sm:pt-8">
+                    Our dynamic industrial team is passionate about reaching new
+                    goals and driving our business forward. We work closely with
+                    our customers to create products that suit their business
+                    needs.
+                  </blockquote>
+                  <div>
+                    <p className="font-semibold text-foreground">
+                      Dov & Immy Lachovich Marcus
+                    </p>
+                    <p className="text-sm text-muted-foreground">Founders</p>
+                  </div>
                 </div>
               </div>
             </div>
           </AnimatedSection>
         </div>
+      </section>
+
+      {/* Atmospheric bakery image */}
+      <section className="relative h-64 sm:h-80 overflow-hidden">
+        <Image
+          src="/images/homepage/bakery-bread.webp"
+          alt="Artisan bread at Baked for Sofia"
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-cream/40" />
       </section>
 
       {/* Timeline */}

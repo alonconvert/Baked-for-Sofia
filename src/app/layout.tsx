@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Baked for Sofia | Artisan Wholesale Bakery Melbourne",
   description:
     "Melbourne's artisan wholesale craft bakery. From sourdough to brioche buns, pastries and gluten-free bakes. Delivered fresh 6 days a week.",
+  icons: {
+    icon: "/images/logo/favicon.png",
+  },
   openGraph: {
     title: "Baked for Sofia | Artisan Wholesale Bakery Melbourne",
     description:

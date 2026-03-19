@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { AnimatedSection } from "@/components/animated-section";
 import { Truck, Clock, MapPin } from "lucide-react";
 
@@ -29,6 +30,18 @@ export function DeliveryInfo() {
               your business opening hours, so you serve only the freshest
               products.
             </p>
+          </div>
+        </AnimatedSection>
+
+        {/* Delivery image */}
+        <AnimatedSection delay={0.1}>
+          <div className="relative mx-auto max-w-md rounded-2xl overflow-hidden mb-16 aspect-[16/9] border border-primary-foreground/[0.08]">
+            <Image
+              src="/images/homepage/delivery.webp"
+              alt="Baked for Sofia delivery"
+              fill
+              className="object-cover"
+            />
           </div>
         </AnimatedSection>
 

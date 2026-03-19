@@ -2,11 +2,51 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedSection } from "@/components/animated-section";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const categoryImages: Record<string, string> = {
+  "Burger & Buns": "/images/products/brioche-bun.webp",
+  "Sandwich & Rolls": "/images/products/panini-roll.webp",
+  "Something Different": "/images/products/baguette.webp",
+  "Sourdough": "/images/products/white-sourdough.webp",
+  "Jerusalem Bagels": "/images/products/jerusalem-bagel-seeds.webp",
+  "Fresh Baked Cakes": "/images/products/basque-cheesecake.webp",
+  "Pastry & Sweet": "/images/products/croissant.webp",
+  "Gluten Friendly": "/images/products/gf-roll.webp",
+};
+
+const productImages: Record<string, string> = {
+  "Brioche Bun": "/images/products/brioche-bun.webp",
+  "Vegan Brioche Bun": "/images/products/vegan-bun.webp",
+  "White Panini": "/images/products/panini-roll.webp",
+  "The Famous Sofia": "/images/products/the-famous-sofia.webp",
+  "Turkish Rounds": "/images/products/turkish-roll.webp",
+  "Fruit Buns": "/images/products/fruit-buns.webp",
+  "Baguette": "/images/products/baguette.webp",
+  "Challah": "/images/products/challah.webp",
+  "Multigrain Tin Loaf": "/images/products/multigrain-sourdough.webp",
+  "White Loaf": "/images/products/white-sourdough.webp",
+  "Rye Loaf": "/images/products/rye-sourdough.webp",
+  "Kalamata Olive Loaf": "/images/products/olive-sourdough.webp",
+  "All Seeds": "/images/products/jerusalem-bagel-seeds.webp",
+  "Sesame": "/images/products/jerusalem-bagel-sesame.webp",
+  "Basque Cheesecake": "/images/products/basque-cheesecake.webp",
+  "Orange Cake": "/images/products/orange-cake.webp",
+  "GF Walnut Brownies": "/images/products/gf-brownies.webp",
+  "Plain Croissant": "/images/products/croissant.webp",
+  "Chocolate Croissant": "/images/products/chocolate-croissant.webp",
+  "Almond Croissant": "/images/products/almond-croissant.webp",
+  "Chocolate Babka": "/images/products/chocolate-babka.webp",
+  "Cinnamon Scroll": "/images/products/cinnamon-scroll.webp",
+  "Fruit Danish": "/images/products/fruit-danish.webp",
+  "GF Hamburger Bun": "/images/products/gf-roll.webp",
+  "GF Seeded Roll": "/images/products/gf-roll.webp",
+};
 
 const categories = [
   {
@@ -151,11 +191,20 @@ function CategoryCard({
         className="rounded-3xl overflow-hidden bg-card border border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/5"
       >
         <div
-          className={`h-32 bg-gradient-to-br ${category.gradient} flex items-center justify-center relative`}
+          className={`h-44 bg-gradient-to-br ${category.gradient} flex items-center justify-center relative overflow-hidden`}
         >
-          <span className="text-4xl font-serif text-foreground/[0.06] text-center px-4">
-            {category.name}
-          </span>
+          {categoryImages[category.name] ? (
+            <Image
+              src={categoryImages[category.name]}
+              alt={category.name}
+              fill
+              className="object-contain p-6"
+            />
+          ) : (
+            <span className="text-4xl font-serif text-foreground/[0.06] text-center px-4">
+              {category.name}
+            </span>
+          )}
         </div>
 
         <div className="p-6 sm:p-8">
@@ -197,8 +246,17 @@ function CategoryCard({
                     {category.products.map((product) => (
                       <span
                         key={product}
-                        className="text-sm px-3 py-1.5 rounded-full bg-secondary/60 text-secondary-foreground border border-border/30"
+                        className="text-sm px-3 py-1.5 rounded-full bg-secondary/60 text-secondary-foreground border border-border/30 inline-flex items-center gap-2"
                       >
+                        {productImages[product] && (
+                          <Image
+                            src={productImages[product]}
+                            alt={product}
+                            width={24}
+                            height={24}
+                            className="rounded-full object-cover"
+                          />
+                        )}
                         {product}
                       </span>
                     ))}
