@@ -10,7 +10,7 @@ export function AboutPreview() {
   return (
     <section className="py-24 sm:py-32 bg-background relative overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Text content */}
           <AnimatedSection direction="left">
             <p className="text-xs font-medium tracking-[0.25em] uppercase text-primary mb-4">
@@ -43,18 +43,36 @@ export function AboutPreview() {
             </Link>
           </AnimatedSection>
 
-          {/* Image, Stats and quote */}
+          {/* Images, Stats and quote */}
           <AnimatedSection direction="right" delay={0.2}>
-            <div className="space-y-6">
-              {/* Product display image */}
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-border/30">
-                <Image
-                  src="/images/homepage/product-display.webp"
-                  alt="Baked for Sofia product display"
-                  fill
-                  className="object-cover"
-                />
+            <div className="space-y-5">
+              {/* Stacked image layout */}
+              <div className="relative">
+                {/* Main product display image */}
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-border/30 shadow-lg">
+                  <Image
+                    src="/images/homepage/product-display.webp"
+                    alt="Baked for Sofia product display"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+                {/* Secondary bakery detail image overlapping */}
+                <div className="absolute -bottom-6 -left-4 sm:-left-6 w-36 sm:w-44 aspect-square rounded-2xl overflow-hidden border-4 border-background shadow-xl">
+                  <Image
+                    src="/images/homepage/bakery-detail.webp"
+                    alt="Artisan bakery detail"
+                    fill
+                    sizes="176px"
+                    className="object-cover"
+                  />
+                </div>
               </div>
+
+              {/* Spacer for overlapping image */}
+              <div className="h-4" />
 
               {/* Dramatic stats */}
               <div className="grid grid-cols-2 gap-4">

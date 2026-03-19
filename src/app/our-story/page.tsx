@@ -77,24 +77,18 @@ const timeline = [
 export default function OurStoryPage() {
   return (
     <>
-      {/* Hero */}
-      <section className="pt-32 pb-20 bg-gradient-to-b from-warm via-cream/50 to-background relative overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/homepage/bakery-detail.webp"
-            alt=""
-            fill
-            className="object-cover opacity-10"
-          />
-        </div>
-        <div
-          className="absolute inset-0 opacity-30 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 40% at 50% 30%, oklch(0.76 0.15 75 / 0.2), transparent)",
-          }}
+      {/* Hero with full-bleed bakery image */}
+      <section className="relative min-h-[70vh] flex items-end overflow-hidden">
+        <Image
+          src="/images/homepage/bakery-detail.webp"
+          alt="Inside the Baked for Sofia bakery"
+          fill
+          sizes="100vw"
+          className="object-cover"
+          priority
         />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16 pt-40 w-full">
           <AnimatedSection>
             <p className="text-xs font-medium tracking-[0.25em] uppercase text-primary mb-3">
               Baked for Sofia
@@ -102,7 +96,7 @@ export default function OurStoryPage() {
             <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-foreground mb-6">
               Our Story
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
               A family bakery born from the ambition of creating a positive
               change in how Melbourne does bread.
             </p>
@@ -165,33 +159,40 @@ export default function OurStoryPage() {
             </div>
           </AnimatedSection>
 
-          {/* Founders */}
+          {/* Founders — larger, editorial layout */}
           <AnimatedSection delay={0.2}>
-            <div className="mt-14 bg-card rounded-3xl border border-border/50 p-8 sm:p-10 relative overflow-hidden">
-              <div className="absolute top-4 left-8 font-serif text-7xl text-primary/[0.06] leading-none">
-                &ldquo;
-              </div>
-              <div className="relative flex flex-col sm:flex-row gap-8 items-center">
-                <div className="relative w-32 h-40 sm:w-40 sm:h-52 flex-shrink-0 rounded-2xl overflow-hidden">
+            <div className="mt-20 grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
+              {/* Founder photo — large and prominent */}
+              <div className="md:col-span-2">
+                <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl border border-border/30">
                   <Image
                     src="/images/homepage/founder.jpg"
                     alt="Dov & Immy Lachovich Marcus, Founders of Baked for Sofia"
                     fill
+                    sizes="(max-width: 768px) 100vw, 40vw"
                     className="object-cover"
                   />
                 </div>
-                <div>
-                  <blockquote className="text-lg text-foreground/80 leading-relaxed italic mb-6 pt-4 sm:pt-8">
-                    Our dynamic industrial team is passionate about reaching new
-                    goals and driving our business forward. We work closely with
-                    our customers to create products that suit their business
-                    needs.
-                  </blockquote>
-                  <div>
-                    <p className="font-semibold text-foreground">
-                      Dov & Immy Lachovich Marcus
-                    </p>
-                    <p className="text-sm text-muted-foreground">Founders</p>
+              </div>
+              {/* Quote */}
+              <div className="md:col-span-3">
+                <div className="bg-card rounded-3xl border border-border/50 p-8 sm:p-10 relative overflow-hidden">
+                  <div className="absolute top-4 left-8 font-serif text-8xl text-primary/[0.06] leading-none">
+                    &ldquo;
+                  </div>
+                  <div className="relative pt-8 sm:pt-10">
+                    <blockquote className="text-xl sm:text-2xl text-foreground/80 leading-relaxed italic mb-8">
+                      Our dynamic industrial team is passionate about reaching
+                      new goals and driving our business forward. We work
+                      closely with our customers to create products that suit
+                      their business needs.
+                    </blockquote>
+                    <div>
+                      <p className="font-semibold text-foreground text-lg">
+                        Dov & Immy Lachovich Marcus
+                      </p>
+                      <p className="text-sm text-muted-foreground">Founders</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -200,15 +201,16 @@ export default function OurStoryPage() {
         </div>
       </section>
 
-      {/* Atmospheric bakery image */}
-      <section className="relative h-64 sm:h-80 overflow-hidden">
+      {/* Full-width bakery bread showcase */}
+      <section className="relative h-[50vh] sm:h-[60vh] overflow-hidden">
         <Image
           src="/images/homepage/bakery-bread.webp"
           alt="Artisan bread at Baked for Sofia"
           fill
+          sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-cream/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-cream/30" />
       </section>
 
       {/* Timeline */}
@@ -281,8 +283,8 @@ export default function OurStoryPage() {
         </div>
       </section>
 
-      {/* Values */}
-      <section className="py-24 bg-background">
+      {/* Values — with bakery image accent */}
+      <section className="py-24 bg-background relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="text-center mb-16">
@@ -315,33 +317,42 @@ export default function OurStoryPage() {
         </div>
       </section>
 
-      {/* Supporting Local */}
-      <section className="py-24 bg-cream/50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <div className="rounded-3xl bg-gradient-to-br from-emerald-50/80 via-green-50/50 to-cream p-10 sm:p-16 border border-sage/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-sage/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative max-w-3xl">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sage/10 mb-6">
-                  <Sprout className="h-7 w-7 text-sage" />
+      {/* Supporting Local — with bakery-bread image background */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/homepage/bakery-bread.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-emerald-950/80" />
+        </div>
+        <div className="relative py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <AnimatedSection>
+              <div className="max-w-3xl mx-auto text-center">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 mb-6">
+                  <Sprout className="h-7 w-7 text-emerald-300" />
                 </div>
-                <h2 className="font-serif text-3xl sm:text-4xl text-foreground mb-6">
+                <h2 className="font-serif text-3xl sm:text-4xl text-white mb-6">
                   Supporting Our Local Community
                 </h2>
-                <p className="text-muted-foreground leading-relaxed text-lg mb-4">
+                <p className="text-white/70 leading-relaxed text-lg mb-4">
                   At BFS, we believe in supporting our local community by
                   sourcing all of our products from local suppliers. Not only
                   does this ensure that we are always getting the highest quality
                   ingredients, but it also allows us to abide by our values and
                   support a sustainable economy.
                 </p>
-                <p className="text-muted-foreground leading-relaxed text-lg">
+                <p className="text-white/70 leading-relaxed text-lg">
                   Our commitment to using locally sourced products is one of the
                   many reasons why people love what we do.
                 </p>
               </div>
-            </div>
-          </AnimatedSection>
+            </AnimatedSection>
+          </div>
         </div>
       </section>
 

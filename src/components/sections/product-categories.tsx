@@ -11,9 +11,6 @@ const categories = [
     highlight: "6 varieties",
     description:
       "Brioche, vegan brioche, potato, beetroot, charcoal, and matcha. From 25g cocktail to 110g hot dog.",
-    gradient: "from-amber-50 to-orange-50",
-    accentColor: "text-amber-700",
-    borderHover: "hover:border-amber-300/60",
     image: "/images/products/brioche-bun.webp",
   },
   {
@@ -21,9 +18,6 @@ const categories = [
     highlight: "12+ options",
     description:
       "Ciabatta, panini, Turkish rounds, The Famous Sofia, heritage rolls, bagels, focaccia, and more.",
-    gradient: "from-yellow-50 to-amber-50",
-    accentColor: "text-yellow-700",
-    borderHover: "hover:border-yellow-300/60",
     image: "/images/products/panini-roll.webp",
   },
   {
@@ -31,9 +25,6 @@ const categories = [
     highlight: "Unique bakes",
     description:
       "Fruit buns, olive baguette, pain de mie, challah, brioche tin loaf, and our facile baguette.",
-    gradient: "from-rose-50 to-pink-50",
-    accentColor: "text-rose-700",
-    borderHover: "hover:border-rose-300/60",
     image: "/images/products/challah.webp",
   },
   {
@@ -41,9 +32,6 @@ const categories = [
     highlight: "72+ hour fermentation",
     description:
       "Multigrain, white, rye, kalamata olive, and tin loaves. Natural fermentation for exceptional flavour.",
-    gradient: "from-orange-50 to-amber-50",
-    accentColor: "text-orange-700",
-    borderHover: "hover:border-orange-300/60",
     image: "/images/products/white-sourdough.webp",
   },
   {
@@ -51,9 +39,6 @@ const categories = [
     highlight: "Hand crafted",
     description:
       "Oven baked and rich in olive oil. Available in all seeds, sesame, and poppy seed varieties.",
-    gradient: "from-stone-100 to-amber-50",
-    accentColor: "text-stone-700",
-    borderHover: "hover:border-stone-300/60",
     image: "/images/products/jerusalem-bagel-seeds.webp",
   },
   {
@@ -61,9 +46,6 @@ const categories = [
     highlight: "Artisan cakes",
     description:
       "Basque cheesecake, orange cake, gluten-free marzipan cake, and walnut brownies.",
-    gradient: "from-purple-50 to-violet-50",
-    accentColor: "text-purple-700",
-    borderHover: "hover:border-purple-300/60",
     image: "/images/products/basque-cheesecake.webp",
   },
   {
@@ -71,9 +53,6 @@ const categories = [
     highlight: "11 varieties",
     description:
       "Croissants, danishes, almond croissant, escargot, chocolate babka, cinnamon scroll, and more.",
-    gradient: "from-pink-50 to-rose-50",
-    accentColor: "text-pink-700",
-    borderHover: "hover:border-pink-300/60",
     image: "/images/products/croissant.webp",
   },
   {
@@ -81,9 +60,6 @@ const categories = [
     highlight: "Dietary range",
     description:
       "GF hamburger buns, seeded rolls, and multigrain loaf. No compromise on taste or texture.",
-    gradient: "from-emerald-50 to-green-50",
-    accentColor: "text-emerald-700",
-    borderHover: "hover:border-emerald-300/60",
     image: "/images/products/gf-roll.webp",
   },
 ];
@@ -112,32 +88,33 @@ export function ProductCategories() {
             <AnimatedSection key={cat.name} delay={i * 0.08}>
               <Link href="/products">
                 <motion.div
-                  whileHover={{ y: -8 }}
+                  whileHover={{ y: -6, scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className={`group rounded-2xl overflow-hidden bg-card border border-border/50 ${cat.borderHover} transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-black/5`}
+                  className="group rounded-2xl overflow-hidden bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-black/10"
                 >
-                  <div
-                    className={`h-36 bg-gradient-to-br ${cat.gradient} flex items-center justify-center relative overflow-hidden`}
-                  >
+                  {/* Image hero area */}
+                  <div className="relative h-52 sm:h-56 lg:h-52 xl:h-56 overflow-hidden">
                     <Image
                       src={cat.image}
                       alt={cat.name}
                       fill
-                      className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="text-base font-semibold text-foreground leading-tight">
+                    {/* Gradient overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                    {/* Text overlay on image */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-white/80 bg-white/15 backdrop-blur-sm px-2.5 py-1 rounded-full mb-2">
+                        {cat.highlight}
+                      </span>
+                      <h3 className="text-lg font-semibold text-white leading-tight">
                         {cat.name}
                       </h3>
                     </div>
-                    <span
-                      className={`inline-block text-[11px] font-medium tracking-wide uppercase ${cat.accentColor} bg-current/5 px-2 py-0.5 rounded-full mb-2.5`}
-                    >
-                      {cat.highlight}
-                    </span>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                  </div>
+                  {/* Description below */}
+                  <div className="p-4">
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                       {cat.description}
                     </p>
                   </div>

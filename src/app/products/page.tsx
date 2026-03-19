@@ -1,29 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import confetti from "canvas-confetti";
 import { AnimatedSection } from "@/components/animated-section";
-import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import {
+  productInquirySchema,
+  type ProductInquiryData,
+} from "@/lib/validations";
+import { submitProductInquiry } from "@/app/actions/submit-lead";
+import {
+  Check,
+  ShoppingBasket,
+  X,
+  Send,
+  CheckCircle2,
+} from "lucide-react";
 
-const categoryImages: Record<string, string> = {
-  "Burger & Buns": "/images/products/brioche-bun.webp",
-  "Sandwich & Rolls": "/images/products/panini-roll.webp",
-  "Something Different": "/images/products/challah.webp",
-  "Sourdough": "/images/products/white-sourdough.webp",
-  "Jerusalem Bagels": "/images/products/jerusalem-bagel-seeds.webp",
-  "Fresh Baked Cakes": "/images/products/basque-cheesecake.webp",
-  "Pastry & Sweet": "/images/products/croissant.webp",
-  "Gluten Friendly": "/images/products/gf-roll.webp",
-};
-
+// ─── Product Image Mappings ──────────────────────────────────────────
 const productImages: Record<string, string> = {
   // Burger & Buns
   "Brioche Bun": "/images/products/brioche-bun.webp",
   "Vegan Brioche Bun": "/images/products/vegan-bun.webp",
+  "Kissing Hot Dogs": "/images/products/kissing-hot-dogs.webp",
   // Sandwich & Rolls
   "White Panini": "/images/products/panini-roll.webp",
   "Seeded Panini": "/images/products/seeded-panini.webp",
@@ -34,9 +41,11 @@ const productImages: Record<string, string> = {
   "Challah Rolls": "/images/products/challah-roll.webp",
   "Ciabatta Rolls": "/images/products/ciabatta-rolls.webp",
   "Coloured Bagels": "/images/products/coloured-bagels.webp",
-  "Focaccia": "/images/products/focaccia.webp",
-  // Something Different — only use clearly named images
-  "Challah": "/images/products/challah.webp",
+  Focaccia: "/images/products/focaccia.webp",
+  // Something Different
+  "Fruit Buns": "/images/products/fruit-buns.webp",
+  Baguette: "/images/products/baguette.webp",
+  Challah: "/images/products/challah.webp",
   "Facile Baguette": "/images/products/facile-baguette.webp",
   // Sourdough
   "Multigrain Tin Loaf": "/images/products/multigrain-sourdough-tin.webp",
@@ -47,7 +56,7 @@ const productImages: Record<string, string> = {
   "White Tin Loaf": "/images/products/white-sourdough-tin.webp",
   // Jerusalem Bagels
   "All Seeds": "/images/products/jerusalem-bagel-seeds.webp",
-  "Sesame": "/images/products/jerusalem-bagel-sesame.webp",
+  Sesame: "/images/products/jerusalem-bagel-sesame.webp",
   "Poppy Seeds": "/images/products/jerusalem-bagel-poppy.webp",
   // Fresh Baked Cakes
   "Basque Cheesecake": "/images/products/basque-cheesecake.webp",
@@ -56,26 +65,42 @@ const productImages: Record<string, string> = {
   "GF Walnut Brownies": "/images/products/gf-brownies.webp",
   // Pastry & Sweet
   "Plain Croissant": "/images/products/croissant.webp",
+  "Vegan Plain Croissant": "/images/products/vegan-croissant.webp",
   "Chocolate Croissant": "/images/products/chocolate-croissant.webp",
-  "Almond Croissant": "/images/products/almond-croissant.webp",
-  "Chocolate Babka": "/images/products/chocolate-babka.webp",
-  "Cinnamon Scroll": "/images/products/cinnamon-scroll.webp",
+  "Vegan Chocolate Croissant": "/images/products/vegan-choc-croissant.webp",
+  "Danish Pastry": "/images/products/vegan-danish.webp",
   "Fruit Danish": "/images/products/fruit-danish.webp",
   "Apple Frangipane": "/images/products/apple-frangipane.webp",
-  "Escargot": "/images/products/escargot.webp",
+  "Cinnamon Scroll": "/images/products/cinnamon-scroll.webp",
+  "Almond Croissant": "/images/products/almond-croissant.webp",
+  Escargot: "/images/products/escargot.webp",
+  "Chocolate Babka": "/images/products/chocolate-babka.webp",
   "Berry Danish": "/images/products/berry-danish.webp",
   // Gluten Friendly
   "GF Hamburger Bun": "/images/products/gf-roll.webp",
+  "GF Seeded Roll": "/images/products/gf-roll.webp",
   "GF Multigrain Loaf": "/images/products/gf-multigrain-loaf.webp",
 };
 
+const categoryHeroImages: Record<string, string> = {
+  "Burger & Buns": "/images/products/brioche-bun.webp",
+  "Sandwich & Rolls": "/images/products/panini-roll.webp",
+  "Something Different": "/images/products/challah.webp",
+  Sourdough: "/images/products/white-sourdough.webp",
+  "Jerusalem Bagels": "/images/products/jerusalem-bagel-seeds.webp",
+  "Fresh Baked Cakes": "/images/products/basque-cheesecake.webp",
+  "Pastry & Sweet": "/images/products/croissant.webp",
+  "Gluten Friendly": "/images/products/gf-roll.webp",
+};
+
+// ─── Categories Data ─────────────────────────────────────────────────
 const categories = [
   {
     name: "Burger & Buns",
     tagline: "The perfect foundation for every burger",
     description:
       "From classic brioche to adventurous beetroot and charcoal buns. Available in hamburger (100g), kids (60g), slider (40g), cocktail (25g), and hot dog (110g) sizes.",
-    gradient: "from-amber-50 to-orange-50",
+    gradient: "from-amber-900/40 to-orange-900/30",
     products: [
       "Brioche Bun",
       "Vegan Brioche Bun",
@@ -83,6 +108,7 @@ const categories = [
       "Beetroot Bun",
       "Charcoal Bun",
       "Matcha Green T Bun",
+      "Kissing Hot Dogs",
     ],
   },
   {
@@ -90,7 +116,7 @@ const categories = [
     tagline: "Crafted for the perfect sandwich",
     description:
       "A comprehensive range of premium sandwich breads, rolls, and specialty options for cafes, delis, and food service businesses.",
-    gradient: "from-yellow-50 to-amber-50",
+    gradient: "from-yellow-900/40 to-amber-900/30",
     products: [
       "Ciabatta Loaf",
       "White Panini",
@@ -111,7 +137,7 @@ const categories = [
     tagline: "When ordinary won't do",
     description:
       "Unique bakes that set your menu apart. From French-style baguettes to enriched loaves, these specialty items add character to any offering.",
-    gradient: "from-rose-50 to-pink-50",
+    gradient: "from-rose-900/40 to-pink-900/30",
     products: [
       "Fruit Buns",
       "Fruit Loaf",
@@ -130,7 +156,7 @@ const categories = [
     tagline: "Over 72 hours of natural fermentation",
     description:
       "Our signature sourdough range undergoes a 72+ hour natural fermentation process, developing deep flavour and the perfect crust-to-crumb ratio.",
-    gradient: "from-orange-50 to-amber-50",
+    gradient: "from-orange-900/40 to-amber-900/30",
     products: [
       "Multigrain Tin Loaf",
       "White Loaf",
@@ -145,7 +171,7 @@ const categories = [
     tagline: "Hand crafted, oven baked, rich in olive oil",
     description:
       "Our Jerusalem bagels are hand shaped, oven baked, and enriched with premium olive oil for an authentic, pillowy texture with a golden crust.",
-    gradient: "from-stone-100 to-amber-50",
+    gradient: "from-stone-800/40 to-amber-900/30",
     products: ["All Seeds", "Sesame", "Poppy Seeds"],
   },
   {
@@ -153,7 +179,7 @@ const categories = [
     tagline: "Artisan cakes for your cabinet",
     description:
       "Carefully crafted cakes that bring quality and flavour to your display. Including gluten-free options.",
-    gradient: "from-purple-50 to-violet-50",
+    gradient: "from-purple-900/40 to-violet-900/30",
     products: [
       "Basque Cheesecake",
       "Orange Cake",
@@ -166,7 +192,7 @@ const categories = [
     tagline: "Handcrafted with premium butter",
     description:
       "Flaky, golden pastries made with the finest butter and ingredients. From classic croissants to indulgent babka, baked fresh daily.",
-    gradient: "from-pink-50 to-rose-50",
+    gradient: "from-pink-900/40 to-rose-900/30",
     products: [
       "Plain Croissant",
       "Vegan Plain Croissant",
@@ -187,119 +213,408 @@ const categories = [
     tagline: "No compromise on taste or texture",
     description:
       "A thoughtful range of gluten-free bakes crafted for those with dietary needs, without sacrificing the quality and flavour you expect.",
-    gradient: "from-emerald-50 to-green-50",
-    products: [
-      "GF Hamburger Bun",
-      "GF Seeded Roll",
-      "GF Multigrain Loaf",
-    ],
+    gradient: "from-emerald-900/40 to-green-900/30",
+    products: ["GF Hamburger Bun", "GF Seeded Roll", "GF Multigrain Loaf"],
   },
 ];
 
-function CategoryCard({
-  category,
+// ─── Product Card Component ──────────────────────────────────────────
+function ProductCard({
+  product,
+  isSelected,
+  onToggle,
   index,
 }: {
-  category: (typeof categories)[0];
+  product: string;
+  isSelected: boolean;
+  onToggle: (product: string) => void;
   index: number;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const imageSrc = productImages[product];
 
   return (
-    <AnimatedSection delay={index * 0.08}>
-      <motion.div
-        layout
-        className="rounded-3xl overflow-hidden bg-card border border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/5"
+    <AnimatedSection delay={index * 0.04}>
+      <motion.button
+        type="button"
+        onClick={() => onToggle(product)}
+        whileHover={{ y: -4 }}
+        whileTap={{ scale: 0.97 }}
+        className={cn(
+          "group relative w-full rounded-2xl overflow-hidden bg-card border-2 transition-all duration-300 text-left cursor-pointer",
+          isSelected
+            ? "border-primary shadow-lg shadow-primary/10 bg-primary/[0.03]"
+            : "border-border/50 hover:border-primary/30 hover:shadow-md hover:shadow-black/5"
+        )}
       >
-        <div
-          className={`h-44 bg-gradient-to-br ${category.gradient} flex items-center justify-center relative overflow-hidden`}
-        >
-          {categoryImages[category.name] ? (
+        {/* Checkmark badge */}
+        <AnimatePresence>
+          {isSelected && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-md"
+            >
+              <Check className="h-4 w-4 text-primary-foreground" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Image area */}
+        <div className="relative aspect-square overflow-hidden bg-secondary/30">
+          {imageSrc ? (
             <Image
-              src={categoryImages[category.name]}
-              alt={category.name}
+              src={imageSrc}
+              alt={product}
               fill
-              className="object-contain p-6"
+              className={cn(
+                "object-cover transition-transform duration-500 group-hover:scale-105",
+                isSelected && "brightness-95"
+              )}
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
-            <span className="text-4xl font-serif text-foreground/[0.06] text-center px-4">
-              {category.name}
-            </span>
+            <div className="absolute inset-0 bg-gradient-to-br from-warm to-cream flex items-center justify-center p-4">
+              <span className="text-sm font-serif text-foreground/40 text-center leading-tight">
+                {product}
+              </span>
+            </div>
           )}
         </div>
 
-        <div className="p-6 sm:p-8">
-          <h2 className="font-serif text-2xl text-foreground mb-1">
-            {category.name}
-          </h2>
-          <p className="text-sm text-primary font-medium mb-3">
-            {category.tagline}
-          </p>
-          <p className="text-muted-foreground leading-relaxed mb-5">
-            {category.description}
-          </p>
-
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-          >
-            {isExpanded ? "Hide" : "View"} all {category.products.length}{" "}
-            products
-            <motion.div
-              animate={{ rotate: isExpanded ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <ChevronDown className="h-4 w-4" />
-            </motion.div>
-          </button>
-
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                <div className="pt-5 mt-5 border-t border-border/50">
-                  <div className="flex flex-wrap gap-2">
-                    {category.products.map((product) => (
-                      <span
-                        key={product}
-                        className="text-sm px-3 py-1.5 rounded-full bg-secondary/60 text-secondary-foreground border border-border/30 inline-flex items-center gap-2"
-                      >
-                        {productImages[product] && (
-                          <Image
-                            src={productImages[product]}
-                            alt={product}
-                            width={24}
-                            height={24}
-                            className="rounded-full object-cover"
-                          />
-                        )}
-                        {product}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        {/* Product name */}
+        <div className="p-3 sm:p-4">
+          <h3 className="text-sm font-medium text-foreground leading-tight">
+            {product}
+          </h3>
         </div>
-      </motion.div>
+      </motion.button>
     </AnimatedSection>
   );
 }
 
+// ─── Category Section Component ──────────────────────────────────────
+function CategorySection({
+  category,
+  index,
+  selectedProducts,
+  onToggleProduct,
+}: {
+  category: (typeof categories)[0];
+  index: number;
+  selectedProducts: Set<string>;
+  onToggleProduct: (product: string) => void;
+}) {
+  const heroImage = categoryHeroImages[category.name];
+
+  return (
+    <section className="py-16 first:pt-0">
+      {/* Category Header */}
+      <AnimatedSection delay={index * 0.05}>
+        <div className="relative mb-10 rounded-3xl overflow-hidden">
+          {/* Background image with overlay */}
+          <div className="relative h-48 sm:h-56 lg:h-64">
+            {heroImage && (
+              <Image
+                src={heroImage}
+                alt={category.name}
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+            )}
+            <div
+              className={`absolute inset-0 bg-gradient-to-r ${category.gradient}`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+
+            {/* Text content over the image */}
+            <div className="relative z-10 flex flex-col justify-end h-full p-6 sm:p-8 lg:p-10">
+              <p className="text-xs font-medium tracking-[0.2em] uppercase text-white/70 mb-1">
+                {category.tagline}
+              </p>
+              <h2 className="font-serif text-3xl sm:text-4xl text-white mb-2">
+                {category.name}
+              </h2>
+              <p className="text-white/80 max-w-2xl leading-relaxed text-sm sm:text-base">
+                {category.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Product Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+        {category.products.map((product, i) => (
+          <ProductCard
+            key={product}
+            product={product}
+            isSelected={selectedProducts.has(product)}
+            onToggle={onToggleProduct}
+            index={i}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ─── Inquiry Form Component ──────────────────────────────────────────
+function InquiryForm({
+  selectedProducts,
+  onRemoveProduct,
+}: {
+  selectedProducts: Set<string>;
+  onRemoveProduct: (product: string) => void;
+}) {
+  const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ProductInquiryData>({
+    resolver: zodResolver(productInquirySchema),
+    values: {
+      businessName: "",
+      contactName: "",
+      phone: "",
+      email: "",
+      selectedProducts: Array.from(selectedProducts),
+      notes: "",
+    },
+  });
+
+  const onSubmit = async (data: ProductInquiryData) => {
+    setServerError(null);
+
+    // Ensure we include latest selected products
+    const payload = {
+      ...data,
+      selectedProducts: Array.from(selectedProducts),
+    };
+
+    const result = await submitProductInquiry(payload);
+
+    if (result.success) {
+      setSubmitted(true);
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#c2703e", "#d4a574", "#7a9e7e"],
+      });
+    } else {
+      setServerError(
+        typeof result.error === "string"
+          ? result.error
+          : "Something went wrong. Please try again."
+      );
+    }
+  };
+
+  return (
+    <AnimatePresence mode="wait">
+      {submitted ? (
+        <motion.div
+          key="success"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center py-12"
+        >
+          <CheckCircle2 className="h-16 w-16 text-sage mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-foreground mb-2">
+            Thank You!
+          </h3>
+          <p className="text-muted-foreground">
+            We&apos;ve received your product inquiry and will get back to you
+            shortly.
+          </p>
+        </motion.div>
+      ) : (
+        <motion.form
+          key="form"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
+          {/* Selected Products Display */}
+          <div className="space-y-3">
+            <Label>Selected Products</Label>
+            <div className="flex flex-wrap gap-2">
+              {Array.from(selectedProducts).map((product) => (
+                <span
+                  key={product}
+                  className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20"
+                >
+                  {product}
+                  <button
+                    type="button"
+                    onClick={() => onRemoveProduct(product)}
+                    className="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+            {selectedProducts.size === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No products selected. Please scroll up to select products
+                you&apos;re interested in.
+              </p>
+            )}
+            {errors.selectedProducts && (
+              <p className="text-sm text-destructive">
+                {errors.selectedProducts.message}
+              </p>
+            )}
+          </div>
+
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <Label htmlFor="inq-businessName">Business Name</Label>
+              <Input
+                id="inq-businessName"
+                placeholder="Your business name"
+                {...register("businessName")}
+              />
+              {errors.businessName && (
+                <p className="text-sm text-destructive">
+                  {errors.businessName.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="inq-contactName">Contact Name</Label>
+              <Input
+                id="inq-contactName"
+                placeholder="Your name"
+                {...register("contactName")}
+              />
+              {errors.contactName && (
+                <p className="text-sm text-destructive">
+                  {errors.contactName.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <Label htmlFor="inq-phone">Phone</Label>
+              <Input
+                id="inq-phone"
+                type="tel"
+                placeholder="0412 345 678"
+                {...register("phone")}
+              />
+              {errors.phone && (
+                <p className="text-sm text-destructive">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="inq-email">Email</Label>
+              <Input
+                id="inq-email"
+                type="email"
+                placeholder="you@business.com"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-sm text-destructive">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="inq-notes">Additional Notes</Label>
+            <Textarea
+              id="inq-notes"
+              placeholder="Tell us about quantities, delivery requirements, or any other details..."
+              rows={4}
+              {...register("notes")}
+            />
+          </div>
+
+          {serverError && (
+            <p className="text-sm text-destructive text-center">
+              {serverError}
+            </p>
+          )}
+
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full text-base"
+            disabled={isSubmitting || selectedProducts.size === 0}
+          >
+            {isSubmitting ? (
+              "Sending..."
+            ) : (
+              <>
+                Send Product Inquiry
+                <Send className="ml-2 h-4 w-4" />
+              </>
+            )}
+          </Button>
+        </motion.form>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ─── Main Page Component ─────────────────────────────────────────────
 export default function ProductsPage() {
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(
+    new Set()
+  );
+
+  const toggleProduct = useCallback((product: string) => {
+    setSelectedProducts((prev) => {
+      const next = new Set(prev);
+      if (next.has(product)) {
+        next.delete(product);
+      } else {
+        next.add(product);
+      }
+      return next;
+    });
+  }, []);
+
+  const removeProduct = useCallback((product: string) => {
+    setSelectedProducts((prev) => {
+      const next = new Set(prev);
+      next.delete(product);
+      return next;
+    });
+  }, []);
+
+  const scrollToInquiry = useCallback(() => {
+    const el = document.getElementById("inquiry");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <>
       {/* Hero */}
       <section className="pt-32 pb-20 bg-gradient-to-b from-warm via-cream/50 to-background relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30 pointer-events-none"
+        <div
+          className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse 60% 40% at 50% 30%, oklch(0.76 0.15 75 / 0.2), transparent)",
+            background:
+              "radial-gradient(ellipse 60% 40% at 50% 30%, oklch(0.76 0.15 75 / 0.2), transparent)",
           }}
         />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
@@ -310,10 +625,14 @@ export default function ProductsPage() {
             <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-foreground mb-6">
               Our Products
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-4">
               From traditionally made sourdough with 72+ hours of natural
               fermentation, to brioche buns, Jerusalem bagels, pastries, and
               gluten-friendly options. Everything your business needs.
+            </p>
+            <p className="text-sm text-muted-foreground/70 max-w-lg mx-auto">
+              Click on any products you&apos;re interested in, then send us an
+              inquiry at the bottom of the page.
             </p>
           </AnimatedSection>
         </div>
@@ -322,38 +641,80 @@ export default function ProductsPage() {
       {/* Product Categories */}
       <section className="py-20 bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="divide-y divide-border/30">
             {categories.map((cat, i) => (
-              <CategoryCard key={cat.name} category={cat} index={i} />
+              <CategorySection
+                key={cat.name}
+                category={cat}
+                index={i}
+                selectedProducts={selectedProducts}
+                onToggleProduct={toggleProduct}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-cream/50">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
+      {/* Inquiry Form Section */}
+      <section id="inquiry" className="py-24 bg-cream/50">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <h2 className="font-serif text-3xl sm:text-4xl text-foreground mb-4">
-              Interested in Our Products?
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Baking authentic, fresh to order, and crafting products to your
-              satisfaction. Get in touch to request samples and pricing.
-            </p>
-            <Link
-              href="/contact"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "text-base px-10 h-12 rounded-full"
-              )}
-            >
-              Get in Touch
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            <div className="text-center mb-10">
+              <h2 className="font-serif text-3xl sm:text-4xl text-foreground mb-4">
+                Product Inquiry
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Select products above, fill in your details, and we&apos;ll get
+                back to you with samples and pricing.
+              </p>
+            </div>
+            <div className="bg-card rounded-3xl border border-border/50 p-6 sm:p-10 shadow-sm">
+              <InquiryForm
+                selectedProducts={selectedProducts}
+                onRemoveProduct={removeProduct}
+              />
+            </div>
           </AnimatedSection>
         </div>
       </section>
+
+      {/* Floating Inquiry Bar */}
+      <AnimatePresence>
+        {selectedProducts.size > 0 && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="fixed bottom-0 left-0 right-0 z-50"
+          >
+            <div className="bg-card/95 backdrop-blur-lg border-t border-border/50 shadow-2xl shadow-black/20">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <ShoppingBasket className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="text-sm sm:text-base font-medium text-foreground truncate">
+                    {selectedProducts.size}{" "}
+                    {selectedProducts.size === 1 ? "product" : "products"}{" "}
+                    selected
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={scrollToInquiry}
+                  className={cn(
+                    buttonVariants({ size: "lg" }),
+                    "rounded-full px-6 sm:px-8 text-sm sm:text-base flex-shrink-0"
+                  )}
+                >
+                  Send Inquiry
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
