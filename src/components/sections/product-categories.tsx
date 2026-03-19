@@ -98,13 +98,15 @@ export function ProductCategories() {
                       src={cat.image}
                       alt={cat.name}
                       fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                      className="object-cover group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
                     />
                     {/* Gradient overlay for text readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                    {/* Shine overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/10 group-hover:to-white/5 transition-all duration-700" />
                     {/* Text overlay on image */}
                     <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-white/80 bg-white/15 backdrop-blur-sm px-2.5 py-1 rounded-full mb-2">
+                      <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-white bg-gold/80 backdrop-blur-sm px-2.5 py-1 rounded-full mb-2 shadow-sm">
                         {cat.highlight}
                       </span>
                       <h3 className="text-lg font-semibold text-white leading-tight">

@@ -60,11 +60,13 @@ export function ContactForm() {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center py-12"
         >
-          <CheckCircle2 className="h-16 w-16 text-sage mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-foreground mb-2">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-gold/20 to-sage/20 mb-6">
+            <CheckCircle2 className="h-10 w-10 text-gold" />
+          </div>
+          <h3 className="text-3xl font-serif text-foreground mb-3">
             Thank You!
           </h3>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-lg leading-relaxed max-w-sm mx-auto">
             We&apos;ve received your inquiry and will get back to you shortly.
           </p>
         </motion.div>
@@ -83,6 +85,7 @@ export function ContactForm() {
               <Input
                 id="businessName"
                 placeholder="Your business name"
+                className="focus-visible:border-gold focus-visible:ring-gold/30"
                 {...register("businessName")}
               />
               {errors.businessName && (
@@ -96,6 +99,7 @@ export function ContactForm() {
               <Input
                 id="contactName"
                 placeholder="Your name"
+                className="focus-visible:border-gold focus-visible:ring-gold/30"
                 {...register("contactName")}
               />
               {errors.contactName && (
@@ -113,6 +117,7 @@ export function ContactForm() {
                 id="phone"
                 type="tel"
                 placeholder="0412 345 678"
+                className="focus-visible:border-gold focus-visible:ring-gold/30"
                 {...register("phone")}
               />
               {errors.phone && (
@@ -127,6 +132,7 @@ export function ContactForm() {
                 id="email"
                 type="email"
                 placeholder="you@business.com"
+                className="focus-visible:border-gold focus-visible:ring-gold/30"
                 {...register("email")}
               />
               {errors.email && (
@@ -143,6 +149,7 @@ export function ContactForm() {
               id="message"
               placeholder="Tell us about your business needs, products you're interested in, delivery requirements..."
               rows={5}
+              className="focus-visible:border-gold focus-visible:ring-gold/30"
               {...register("message")}
             />
             {errors.message && (
@@ -161,7 +168,7 @@ export function ContactForm() {
           <Button
             type="submit"
             size="lg"
-            className="w-full text-base"
+            className="w-full text-base h-12 rounded-xl shadow-lg shadow-primary/15 hover:shadow-xl hover:shadow-primary/25 transition-shadow duration-300"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

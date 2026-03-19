@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Instagram, Facebook, Phone, Mail } from "lucide-react";
+import { Instagram, Facebook, Phone, Mail, Wheat } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -11,6 +11,9 @@ const navLinks = [
 export function Footer() {
   return (
     <footer className="bg-espresso text-primary-foreground relative overflow-hidden">
+      {/* Gold divider at top */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+
       {/* Texture */}
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -33,7 +36,7 @@ export function Footer() {
                 href="https://www.instagram.com/bakedforsofia/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-primary-foreground/[0.06] flex items-center justify-center text-primary-foreground/40 hover:text-gold hover:bg-primary-foreground/10 transition-all"
+                className="w-10 h-10 rounded-xl bg-primary-foreground/[0.06] flex items-center justify-center text-primary-foreground/40 hover:text-espresso hover:bg-gold/90 transition-all duration-300"
                 aria-label="Instagram"
               >
                 <Instagram className="h-4 w-4" />
@@ -42,7 +45,7 @@ export function Footer() {
                 href="https://www.facebook.com/bakedforsofia/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-primary-foreground/[0.06] flex items-center justify-center text-primary-foreground/40 hover:text-gold hover:bg-primary-foreground/10 transition-all"
+                className="w-10 h-10 rounded-xl bg-primary-foreground/[0.06] flex items-center justify-center text-primary-foreground/40 hover:text-espresso hover:bg-gold/90 transition-all duration-300"
                 aria-label="Facebook"
               >
                 <Facebook className="h-4 w-4" />
@@ -103,9 +106,11 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Baked for Sofia. All rights
             reserved.
           </p>
-          <p className="text-xs text-primary-foreground/20">
-            Artisan Wholesale Bakery &middot; Melbourne, Australia
-          </p>
+          <div className="flex items-center gap-2 text-xs text-primary-foreground/20">
+            <Wheat className="h-3 w-3 text-gold/40" />
+            <span>Artisan Wholesale Bakery &middot; Melbourne, Australia</span>
+            <Wheat className="h-3 w-3 text-gold/40 scale-x-[-1]" />
+          </div>
         </div>
       </div>
     </footer>

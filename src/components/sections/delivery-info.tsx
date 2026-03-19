@@ -39,7 +39,10 @@ export function DeliveryInfo() {
                     Delivery Service
                   </p>
                   <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-primary-foreground mb-6">
-                    6 Days a Week
+                    <span className="relative inline-block">
+                      6 Days a Week
+                      <span className="absolute -bottom-2 left-0 right-0 h-[3px] bg-gradient-to-r from-gold/80 via-gold/50 to-transparent rounded-full" />
+                    </span>
                   </h2>
                   <p className="text-lg text-primary-foreground/60 leading-relaxed max-w-xl">
                     Straight into your business. We deliver your order overnight,
@@ -68,8 +71,8 @@ export function DeliveryInfo() {
                   },
                 ].map((item, i) => (
                   <AnimatedSection key={item.title} delay={i * 0.12}>
-                    <div className="flex items-start gap-5 p-5 rounded-2xl bg-primary-foreground/[0.05] border border-primary-foreground/[0.08] backdrop-blur-sm">
-                      <div className="flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gold/10">
+                    <div className="flex items-start gap-5 p-5 rounded-2xl bg-primary-foreground/[0.05] border border-gold/15 backdrop-blur-sm hover:border-gold/30 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300">
+                      <div className="flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gold/15 shadow-sm shadow-gold/10">
                         <item.icon className="h-6 w-6 text-gold" />
                       </div>
                       <div>

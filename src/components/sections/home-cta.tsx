@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 export function HomeCTA() {
   return (
     <section className="py-24 sm:py-32 bg-warm/40 relative overflow-hidden">
-      {/* Subtle decorative circles */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-primary/5" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-primary/5" />
+      {/* Decorative dotted arcs - bakery-themed */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-dashed border-gold/10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-dotted border-primary/8" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border border-dashed border-gold/8" />
 
       <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
         <AnimatedSection>
@@ -31,7 +32,7 @@ export function HomeCTA() {
             href="/contact"
             className={cn(
               buttonVariants({ size: "lg" }),
-              "text-base px-10 h-12 rounded-full"
+              "text-base px-12 h-14 rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-shadow duration-300"
             )}
           >
             Let Us Know What You Need

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import confetti from "canvas-confetti";
@@ -218,6 +218,22 @@ const categories = [
   },
 ];
 
+// ─── Checkmark animation keyframes ─────────────────────────────────
+const checkmarkVariants = {
+  initial: { scale: 0, opacity: 0 },
+  animate: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 500,
+      damping: 15,
+      mass: 0.8,
+    },
+  },
+  exit: { scale: 0, opacity: 0, transition: { duration: 0.15 } },
+};
+
 // ─── Product Card Component ──────────────────────────────────────────
 function ProductCard({
   product,
@@ -238,24 +254,34 @@ function ProductCard({
         type="button"
         onClick={() => onToggle(product)}
         whileHover={{ y: -4 }}
-        whileTap={{ scale: 0.97 }}
+        whileTap={{ scale: 0.93 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
         className={cn(
-          "group relative w-full rounded-2xl overflow-hidden bg-card border-2 transition-all duration-300 text-left cursor-pointer",
+          "group relative w-full rounded-2xl overflow-hidden bg-card border-2 transition-all duration-300 text-left cursor-pointer min-h-[140px] sm:min-h-0",
           isSelected
-            ? "border-primary shadow-lg shadow-primary/10 bg-primary/[0.03]"
+            ? "border-gold shadow-lg shadow-gold/20 bg-primary/[0.03]"
             : "border-border/50 hover:border-primary/30 hover:shadow-md hover:shadow-black/5"
         )}
+        style={
+          isSelected
+            ? {
+                boxShadow:
+                  "0 0 20px oklch(0.76 0.15 75 / 0.25), 0 4px 12px oklch(0.76 0.15 75 / 0.15)",
+              }
+            : undefined
+        }
       >
-        {/* Checkmark badge */}
+        {/* Checkmark badge with pulse on entry */}
         <AnimatePresence>
           {isSelected && (
             <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-md"
+              variants={checkmarkVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-gold flex items-center justify-center shadow-md"
             >
-              <Check className="h-4 w-4 text-primary-foreground" />
+              <Check className="h-4 w-4 text-white" strokeWidth={3} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -263,19 +289,46 @@ function ProductCard({
         {/* Image area */}
         <div className="relative aspect-square overflow-hidden bg-secondary/30">
           {imageSrc ? (
-            <Image
-              src={imageSrc}
-              alt={product}
-              fill
-              className={cn(
-                "object-cover transition-transform duration-500 group-hover:scale-105",
-                isSelected && "brightness-95"
-              )}
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            />
+            <>
+              <Image
+                src={imageSrc}
+                alt={product}
+                fill
+                className={cn(
+                  "object-cover transition-transform duration-500 group-hover:scale-105",
+                  isSelected && "brightness-95"
+                )}
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              />
+              {/* Warm overlay tint when selected */}
+              <AnimatePresence>
+                {isSelected && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 bg-gradient-to-t from-amber-800/20 via-amber-600/10 to-transparent pointer-events-none"
+                  />
+                )}
+              </AnimatePresence>
+            </>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-warm to-cream flex items-center justify-center p-4">
-              <span className="text-sm font-serif text-foreground/40 text-center leading-tight">
+              {/* Subtle pattern for no-image cards */}
+              <div
+                className="absolute inset-0 opacity-[0.06]"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle at 20% 50%, oklch(0.52 0.14 38) 1px, transparent 1px), radial-gradient(circle at 80% 20%, oklch(0.76 0.15 75) 1px, transparent 1px), radial-gradient(circle at 50% 80%, oklch(0.52 0.14 38) 0.5px, transparent 0.5px)",
+                  backgroundSize: "30px 30px, 40px 40px, 20px 20px",
+                }}
+              />
+              <div className="absolute inset-0 opacity-[0.04]" style={{
+                backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q40 20 30 35 Q20 20 30 5z' fill='none' stroke='%23c2703e' stroke-width='0.5' opacity='0.5'/%3E%3C/svg%3E\")",
+                backgroundSize: "60px 60px",
+              }} />
+              <span className="relative text-sm font-serif text-foreground/40 text-center leading-tight">
                 {product}
               </span>
             </div>
@@ -306,13 +359,16 @@ function CategorySection({
   onToggleProduct: (product: string) => void;
 }) {
   const heroImage = categoryHeroImages[category.name];
+  const selectedInCategory = category.products.filter((p) =>
+    selectedProducts.has(p)
+  ).length;
 
   return (
     <section className="py-16 first:pt-0">
       {/* Category Header */}
       <AnimatedSection delay={index * 0.05}>
         <div className="relative mb-10 rounded-3xl overflow-hidden">
-          {/* Background image with overlay */}
+          {/* Background image with warm overlay */}
           <div className="relative h-48 sm:h-56 lg:h-64">
             {heroImage && (
               <Image
@@ -326,13 +382,20 @@ function CategorySection({
             <div
               className={`absolute inset-0 bg-gradient-to-r ${category.gradient}`}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-amber-950/60 via-amber-950/20 to-transparent" />
 
             {/* Text content over the image */}
             <div className="relative z-10 flex flex-col justify-end h-full p-6 sm:p-8 lg:p-10">
-              <p className="text-xs font-medium tracking-[0.2em] uppercase text-white/70 mb-1">
-                {category.tagline}
-              </p>
+              <div className="flex items-center gap-3 mb-1">
+                <p className="text-xs font-medium tracking-[0.2em] uppercase text-white/70">
+                  {category.tagline}
+                </p>
+                {selectedInCategory > 0 && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-full bg-gold/20 text-gold backdrop-blur-sm border border-gold/20">
+                    {selectedInCategory} of {category.products.length} selected
+                  </span>
+                )}
+              </div>
               <h2 className="font-serif text-3xl sm:text-4xl text-white mb-2">
                 {category.name}
               </h2>
@@ -345,7 +408,7 @@ function CategorySection({
       </AnimatedSection>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
         {category.products.map((product, i) => (
           <ProductCard
             key={product}
@@ -415,6 +478,11 @@ function InquiryForm({
     }
   };
 
+  const productsArray = useMemo(
+    () => Array.from(selectedProducts),
+    [selectedProducts]
+  );
+
   return (
     <AnimatePresence mode="wait">
       {submitted ? (
@@ -445,23 +513,52 @@ function InquiryForm({
           {/* Selected Products Display */}
           <div className="space-y-3">
             <Label>Selected Products</Label>
-            <div className="flex flex-wrap gap-2">
-              {Array.from(selectedProducts).map((product) => (
-                <span
-                  key={product}
-                  className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20"
-                >
-                  {product}
-                  <button
-                    type="button"
-                    onClick={() => onRemoveProduct(product)}
-                    className="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
+            <LayoutGroup>
+              <div className="flex flex-wrap gap-2">
+                <AnimatePresence mode="popLayout">
+                  {productsArray.map((product) => {
+                    const thumb = productImages[product];
+                    return (
+                      <motion.span
+                        key={product}
+                        layout
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.15 } }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="inline-flex items-center gap-1.5 text-sm pl-1.5 pr-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
+                      >
+                        {thumb ? (
+                          <span className="relative w-6 h-6 rounded-full overflow-hidden flex-shrink-0 border border-primary/10">
+                            <Image
+                              src={thumb}
+                              alt={product}
+                              fill
+                              className="object-cover"
+                              sizes="24px"
+                            />
+                          </span>
+                        ) : (
+                          <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-primary/60">
+                            {product.charAt(0)}
+                          </span>
+                        )}
+                        <span className="truncate max-w-[120px] sm:max-w-[180px]">
+                          {product}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => onRemoveProduct(product)}
+                          className="hover:bg-primary/20 rounded-full p-0.5 transition-colors ml-0.5 min-w-[20px] min-h-[20px] flex items-center justify-center"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </LayoutGroup>
             {selectedProducts.size === 0 && (
               <p className="text-sm text-muted-foreground">
                 No products selected. Please scroll up to select products
@@ -573,6 +670,37 @@ function InquiryForm({
   );
 }
 
+// ─── Floating Bar Product Preview ────────────────────────────────────
+function FloatingBarPreview({
+  selectedProducts,
+}: {
+  selectedProducts: Set<string>;
+}) {
+  const productsArray = Array.from(selectedProducts);
+  const count = productsArray.length;
+  if (count === 0) return null;
+
+  const previewNames = productsArray.slice(0, 2);
+  const remaining = count - previewNames.length;
+
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center flex-shrink-0 border border-gold/20">
+        <ShoppingBasket className="h-5 w-5 text-gold" />
+      </div>
+      <div className="min-w-0">
+        <span className="text-sm sm:text-base font-medium text-foreground block truncate">
+          {count} {count === 1 ? "product" : "products"} selected
+        </span>
+        <span className="text-xs text-muted-foreground truncate block max-w-[200px] sm:max-w-[300px]">
+          {previewNames.join(", ")}
+          {remaining > 0 && ` +${remaining} more`}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page Component ─────────────────────────────────────────────
 export default function ProductsPage() {
   const [selectedProducts, setSelectedProducts] = useState<Set<string>>(
@@ -656,8 +784,20 @@ export default function ProductsPage() {
       </section>
 
       {/* Inquiry Form Section */}
-      <section id="inquiry" className="py-24 bg-cream/50">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <section
+        id="inquiry"
+        className="py-24 relative overflow-hidden"
+      >
+        {/* Warm background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-warm/30 to-cream/50" />
+        <div
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 50% at 50% 50%, oklch(0.76 0.15 75 / 0.15), transparent)",
+          }}
+        />
+        <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="text-center mb-10">
               <h2 className="font-serif text-3xl sm:text-4xl text-foreground mb-4">
@@ -668,7 +808,9 @@ export default function ProductsPage() {
                 back to you with samples and pricing.
               </p>
             </div>
-            <div className="bg-card rounded-3xl border border-border/50 p-6 sm:p-10 shadow-sm">
+            <div className="bg-card rounded-3xl border border-border/50 p-6 sm:p-10 shadow-sm overflow-hidden relative">
+              {/* Gold top border accent */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-gold to-transparent" />
               <InquiryForm
                 selectedProducts={selectedProducts}
                 onRemoveProduct={removeProduct}
@@ -683,33 +825,54 @@ export default function ProductsPage() {
         {selectedProducts.size > 0 && (
           <motion.div
             initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              transition: {
+                type: "spring",
+                damping: 20,
+                stiffness: 300,
+                mass: 0.8,
+              },
+            }}
+            exit={{
+              y: 100,
+              opacity: 0,
+              transition: { duration: 0.2 },
+            }}
             className="fixed bottom-0 left-0 right-0 z-50"
           >
-            <div className="bg-card/95 backdrop-blur-lg border-t border-border/50 shadow-2xl shadow-black/20">
+            <div
+              className="bg-card/95 backdrop-blur-lg border-t-2 border-gold/40"
+              style={{
+                boxShadow:
+                  "0 -8px 30px oklch(0.76 0.15 75 / 0.1), 0 -2px 10px oklch(0.25 0.04 45 / 0.08)",
+              }}
+            >
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <ShoppingBasket className="h-5 w-5 text-primary" />
-                  </div>
-                  <span className="text-sm sm:text-base font-medium text-foreground truncate">
-                    {selectedProducts.size}{" "}
-                    {selectedProducts.size === 1 ? "product" : "products"}{" "}
-                    selected
-                  </span>
-                </div>
-                <button
+                <FloatingBarPreview selectedProducts={selectedProducts} />
+                <motion.button
                   type="button"
                   onClick={scrollToInquiry}
+                  animate={{
+                    boxShadow: [
+                      "0 0 0 0 oklch(0.76 0.15 75 / 0)",
+                      "0 0 0 6px oklch(0.76 0.15 75 / 0.15)",
+                      "0 0 0 0 oklch(0.76 0.15 75 / 0)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                   className={cn(
                     buttonVariants({ size: "lg" }),
-                    "rounded-full px-6 sm:px-8 text-sm sm:text-base flex-shrink-0"
+                    "rounded-full px-6 sm:px-8 text-sm sm:text-base flex-shrink-0 min-h-[44px]"
                   )}
                 >
                   Send Inquiry
-                </button>
+                </motion.button>
               </div>
             </div>
           </motion.div>

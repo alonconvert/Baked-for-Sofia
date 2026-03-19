@@ -109,21 +109,21 @@ export default function OurStoryPage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30">
-                <p className="font-serif text-5xl text-primary">2015</p>
-                <p className="text-sm text-muted-foreground mt-2">
+              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30 border-b-2 border-b-gold/30">
+                <p className="font-serif text-6xl font-bold tracking-tight text-primary">2015</p>
+                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-3">
                   Year founded
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30">
-                <p className="font-serif text-5xl text-gold">25sqm</p>
-                <p className="text-sm text-muted-foreground mt-2">
+              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30 border-b-2 border-b-gold/30">
+                <p className="font-serif text-6xl font-bold tracking-tight text-gold">25sqm</p>
+                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-3">
                   Where it started
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30">
-                <p className="font-serif text-5xl text-primary">400+</p>
-                <p className="text-sm text-muted-foreground mt-2">
+              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30 border-b-2 border-b-gold/30">
+                <p className="font-serif text-6xl font-bold tracking-tight text-primary">400+</p>
+                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-3">
                   Customers today
                 </p>
               </div>
@@ -164,7 +164,7 @@ export default function OurStoryPage() {
             <div className="mt-20 grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
               {/* Founder photo — large and prominent */}
               <div className="md:col-span-2">
-                <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl border border-border/30">
+                <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl border-2 border-warm ring-1 ring-gold/20 ring-offset-4 ring-offset-background">
                   <Image
                     src="/images/homepage/founder.jpg"
                     alt="Dov & Immy Lachovich Marcus, Founders of Baked for Sofia"
@@ -177,10 +177,8 @@ export default function OurStoryPage() {
               {/* Quote */}
               <div className="md:col-span-3">
                 <div className="bg-card rounded-3xl border border-border/50 p-8 sm:p-10 relative overflow-hidden">
-                  <div className="absolute top-4 left-8 font-serif text-8xl text-primary/[0.06] leading-none">
-                    &ldquo;
-                  </div>
-                  <div className="relative pt-8 sm:pt-10">
+                  <div className="absolute left-0 top-8 bottom-8 w-[3px] rounded-full bg-gradient-to-b from-gold to-primary/40" />
+                  <div className="relative pl-4">
                     <blockquote className="text-xl sm:text-2xl text-foreground/80 leading-relaxed italic mb-8">
                       Our dynamic industrial team is passionate about reaching
                       new goals and driving our business forward. We work
@@ -229,7 +227,7 @@ export default function OurStoryPage() {
 
           <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-border/60 md:-translate-x-px" />
+            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold/30 via-border/60 to-gold/30 md:-translate-x-px" />
 
             <div className="space-y-12">
               {timeline.map((item, i) => (
@@ -256,7 +254,7 @@ export default function OurStoryPage() {
                     </div>
 
                     {/* Dot */}
-                    <div className="absolute left-6 md:left-1/2 w-3 h-3 rounded-full bg-primary border-2 border-background -translate-x-1.5 md:-translate-x-1.5 mt-2 z-10" />
+                    <div className="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-gold border-2 border-background -translate-x-2 md:-translate-x-2 mt-2 z-10 shadow-sm shadow-gold/30" />
 
                     <div className="md:w-1/2 pl-14 md:pl-0">
                       <div

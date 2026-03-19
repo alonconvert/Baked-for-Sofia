@@ -50,7 +50,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative text-sm font-medium tracking-wide transition-colors hover:text-primary ${
+                className={`relative text-sm font-medium tracking-wide transition-colors hover:text-primary py-2 px-1 ${
                   pathname === link.href
                     ? "text-primary"
                     : "text-muted-foreground"
@@ -110,7 +110,7 @@ export function Header() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden overflow-hidden bg-background/95 backdrop-blur-xl border-b border-border/50"
+            className="md:hidden overflow-hidden bg-gradient-to-b from-background/98 to-cream/95 backdrop-blur-xl border-b border-border/50"
           >
             <div className="px-6 py-6 space-y-1">
               {navLinks.map((link) => (

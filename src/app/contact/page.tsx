@@ -67,8 +67,8 @@ export default function ContactPage() {
                           href="tel:0399420881"
                           className="flex items-center gap-4 group"
                         >
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <Phone className="h-5 w-5 text-primary" />
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:bg-gradient-to-br group-hover:from-gold/20 group-hover:to-gold/10 transition-all duration-300">
+                            <Phone className="h-5 w-5 text-primary group-hover:text-gold transition-colors duration-300" />
                           </div>
                           <div>
                             <p className="font-medium text-foreground">
@@ -85,8 +85,8 @@ export default function ContactPage() {
                           href="mailto:orders@bakedforsofia.com"
                           className="flex items-center gap-4 group"
                         >
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <Mail className="h-5 w-5 text-primary" />
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:bg-gradient-to-br group-hover:from-gold/20 group-hover:to-gold/10 transition-all duration-300">
+                            <Mail className="h-5 w-5 text-primary group-hover:text-gold transition-colors duration-300" />
                           </div>
                           <div>
                             <p className="font-medium text-foreground">
@@ -98,9 +98,9 @@ export default function ContactPage() {
                           </div>
                         </a>
                       </li>
-                      <li className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0">
-                          <Clock className="h-5 w-5 text-primary" />
+                      <li className="flex items-center gap-4 group">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0 group-hover:from-gold/20 group-hover:to-gold/10 transition-all duration-300">
+                          <Clock className="h-5 w-5 text-primary group-hover:text-gold transition-colors duration-300" />
                         </div>
                         <div>
                           <p className="font-medium text-foreground">
@@ -111,9 +111,9 @@ export default function ContactPage() {
                           </p>
                         </div>
                       </li>
-                      <li className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0">
-                          <MapPin className="h-5 w-5 text-primary" />
+                      <li className="flex items-center gap-4 group">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0 group-hover:from-gold/20 group-hover:to-gold/10 transition-all duration-300">
+                          <MapPin className="h-5 w-5 text-primary group-hover:text-gold transition-colors duration-300" />
                         </div>
                         <div>
                           <p className="font-medium text-foreground">
@@ -155,7 +155,7 @@ export default function ContactPage() {
                   </div>
 
                   {/* Samples card */}
-                  <div className="rounded-2xl bg-gradient-to-br from-warm to-cream border border-border/30 p-7">
+                  <div className="rounded-2xl bg-gradient-to-br from-warm to-cream border border-gold/20 border-l-[3px] border-l-gold/50 p-7">
                     <h3 className="font-serif text-lg text-foreground mb-2">
                       Request Samples
                     </h3>

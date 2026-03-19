@@ -77,16 +77,16 @@ export function AboutPreview() {
               {/* Dramatic stats */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gradient-to-br from-warm to-cream rounded-2xl p-6 text-center border border-border/30">
-                  <p className="font-serif text-4xl sm:text-5xl text-primary">
+                  <p className="font-serif text-5xl sm:text-6xl text-primary font-bold tracking-tight">
                     2015
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">Founded</p>
+                  <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-2">Since founded</p>
                 </div>
                 <div className="bg-gradient-to-br from-warm to-cream rounded-2xl p-6 text-center border border-border/30">
-                  <p className="font-serif text-4xl sm:text-5xl text-gold">
+                  <p className="font-serif text-5xl sm:text-6xl text-gold font-bold tracking-tight">
                     400+
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-2">
                     Customers
                   </p>
                 </div>
@@ -94,11 +94,9 @@ export function AboutPreview() {
 
               {/* Pull quote */}
               <div className="bg-card rounded-2xl border border-border/50 p-8 relative">
-                <div className="absolute top-4 left-6 font-serif text-6xl text-primary/10 leading-none">
-                  &ldquo;
-                </div>
-                <blockquote className="relative z-10 pt-6">
-                  <p className="text-foreground leading-relaxed italic">
+                <div className="absolute left-0 top-6 bottom-6 w-[3px] rounded-full bg-gradient-to-b from-gold to-primary/40" />
+                <blockquote className="pl-4">
+                  <p className="text-foreground leading-relaxed italic text-lg">
                     We&apos;re as dedicated to making the best baked goods as we
                     are to helping create a healthy, sustainable business
                     community.

@@ -9,9 +9,10 @@ export function SupportingLocal() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <AnimatedSection direction="left">
-            <div className="rounded-3xl bg-gradient-to-br from-emerald-50/80 via-green-50/50 to-cream p-10 sm:p-14 border border-sage/10 relative overflow-hidden">
-              {/* Decorative background element */}
-              <div className="absolute top-0 right-0 w-48 h-48 bg-sage/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="rounded-3xl bg-gradient-to-br from-cream via-warm/40 to-cream p-10 sm:p-14 border border-sage/15 relative overflow-hidden">
+              {/* Decorative dotted circle element */}
+              <div className="absolute top-0 right-0 w-48 h-48 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-dashed border-gold/15" />
+              <div className="absolute top-0 right-0 w-36 h-36 -translate-y-1/3 translate-x-1/3 rounded-full border border-dashed border-sage/10" />
 
               <div className="relative">
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sage/10 mb-6">
@@ -55,7 +56,7 @@ export function SupportingLocal() {
                   key={item.title}
                   className="flex gap-5 items-start group"
                 >
-                  <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-sage/10 flex items-center justify-center group-hover:bg-sage/15 transition-colors">
+                  <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-sage/10 border border-gold/10 flex items-center justify-center group-hover:bg-sage/15 group-hover:border-gold/20 transition-all duration-300">
                     <item.icon className="h-5 w-5 text-sage" />
                   </div>
                   <div>
