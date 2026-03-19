@@ -36,7 +36,12 @@
       "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/Sesame-Jerusalem-bagel-250x300.png.webp\" -o jerusalem-bagel-sesame.webp)",
       "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2024/09/Basque-cheesecake-250x300.jpg.webp\" -o basque-cheesecake.webp)",
       "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2024/09/Orange-cake-250x300.jpg.webp\" -o orange-cake.webp)",
-      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2024/09/Gluten-Free-Walnuts-Brownies-250x300.jpg.webp\" -o gf-brownies.webp)"
+      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2024/09/Gluten-Free-Walnuts-Brownies-250x300.jpg.webp\" -o gf-brownies.webp)",
+      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2024/09/Facile-Baguette-250x300.jpg.webp\" -o facile-baguette.webp)",
+      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2024/09/Challah-Roll-1-250x300.jpg.webp\" -o challah-roll.webp)",
+      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/Coloured-bagels-250x300.png.webp\" -o coloured-bagels.webp)",
+      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/Multigrain-Roll-Gluten-free-250x300.png.webp\" -o gf-multigrain-loaf.webp)",
+      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/All-seeds-Panini-roll-250x300.png.webp\" -o seeded-panini.webp)"
     ]
   }
 }

@@ -34,7 +34,7 @@ const categories = [
     gradient: "from-rose-50 to-pink-50",
     accentColor: "text-rose-700",
     borderHover: "hover:border-rose-300/60",
-    image: "/images/products/baguette.webp",
+    image: "/images/products/challah.webp",
   },
   {
     name: "Sourdough",

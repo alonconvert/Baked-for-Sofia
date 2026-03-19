@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const categoryImages: Record<string, string> = {
   "Burger & Buns": "/images/products/brioche-bun.webp",
   "Sandwich & Rolls": "/images/products/panini-roll.webp",
-  "Something Different": "/images/products/baguette.webp",
+  "Something Different": "/images/products/challah.webp",
   "Sourdough": "/images/products/white-sourdough.webp",
   "Jerusalem Bagels": "/images/products/jerusalem-bagel-seeds.webp",
   "Fresh Baked Cakes": "/images/products/basque-cheesecake.webp",
@@ -21,31 +21,52 @@ const categoryImages: Record<string, string> = {
 };
 
 const productImages: Record<string, string> = {
+  // Burger & Buns
   "Brioche Bun": "/images/products/brioche-bun.webp",
   "Vegan Brioche Bun": "/images/products/vegan-bun.webp",
+  // Sandwich & Rolls
   "White Panini": "/images/products/panini-roll.webp",
-  "The Famous Sofia": "/images/products/the-famous-sofia.webp",
+  "Seeded Panini": "/images/products/seeded-panini.webp",
   "Turkish Rounds": "/images/products/turkish-roll.webp",
-  "Fruit Buns": "/images/products/fruit-buns.webp",
-  "Baguette": "/images/products/baguette.webp",
+  "The Famous Sofia": "/images/products/the-famous-sofia.webp",
+  "Sandwich Bread": "/images/products/sandwich-bread.webp",
+  "Heritage Kissing Rolls": "/images/products/heritage-kissing-roll.webp",
+  "Challah Rolls": "/images/products/challah-roll.webp",
+  "Ciabatta Rolls": "/images/products/ciabatta-rolls.webp",
+  "Coloured Bagels": "/images/products/coloured-bagels.webp",
+  "Focaccia": "/images/products/focaccia.webp",
+  // Something Different — only use clearly named images
   "Challah": "/images/products/challah.webp",
-  "Multigrain Tin Loaf": "/images/products/multigrain-sourdough.webp",
+  "Facile Baguette": "/images/products/facile-baguette.webp",
+  // Sourdough
+  "Multigrain Tin Loaf": "/images/products/multigrain-sourdough-tin.webp",
   "White Loaf": "/images/products/white-sourdough.webp",
   "Rye Loaf": "/images/products/rye-sourdough.webp",
   "Kalamata Olive Loaf": "/images/products/olive-sourdough.webp",
+  "Multigrain Loaf": "/images/products/multigrain-sourdough-loaf.webp",
+  "White Tin Loaf": "/images/products/white-sourdough-tin.webp",
+  // Jerusalem Bagels
   "All Seeds": "/images/products/jerusalem-bagel-seeds.webp",
   "Sesame": "/images/products/jerusalem-bagel-sesame.webp",
+  "Poppy Seeds": "/images/products/jerusalem-bagel-poppy.webp",
+  // Fresh Baked Cakes
   "Basque Cheesecake": "/images/products/basque-cheesecake.webp",
   "Orange Cake": "/images/products/orange-cake.webp",
+  "GF Marzipan Cake": "/images/products/gf-marzipan-cake.webp",
   "GF Walnut Brownies": "/images/products/gf-brownies.webp",
+  // Pastry & Sweet
   "Plain Croissant": "/images/products/croissant.webp",
   "Chocolate Croissant": "/images/products/chocolate-croissant.webp",
   "Almond Croissant": "/images/products/almond-croissant.webp",
   "Chocolate Babka": "/images/products/chocolate-babka.webp",
   "Cinnamon Scroll": "/images/products/cinnamon-scroll.webp",
   "Fruit Danish": "/images/products/fruit-danish.webp",
+  "Apple Frangipane": "/images/products/apple-frangipane.webp",
+  "Escargot": "/images/products/escargot.webp",
+  "Berry Danish": "/images/products/berry-danish.webp",
+  // Gluten Friendly
   "GF Hamburger Bun": "/images/products/gf-roll.webp",
-  "GF Seeded Roll": "/images/products/gf-roll.webp",
+  "GF Multigrain Loaf": "/images/products/gf-multigrain-loaf.webp",
 };
 
 const categories = [
