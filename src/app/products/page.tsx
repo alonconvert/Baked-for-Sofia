@@ -348,20 +348,23 @@ function ProductCard({
               </AnimatePresence>
             </>
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-100/80 via-warm to-orange-50/60 flex flex-col items-center justify-center p-4">
-              {/* Subtle pattern for no-image cards */}
+            <div className="absolute inset-0 bg-gradient-to-br from-cream via-warm to-cream flex flex-col items-center justify-center p-4">
+              {/* Parchment noise texture — matches site-wide card backgrounds */}
               <div
-                className="absolute inset-0 opacity-[0.06]"
+                className="absolute inset-0 opacity-[0.04]"
                 style={{
                   backgroundImage:
-                    "radial-gradient(circle at 20% 50%, oklch(0.52 0.14 38) 1px, transparent 1px), radial-gradient(circle at 80% 20%, oklch(0.76 0.15 75) 1px, transparent 1px), radial-gradient(circle at 50% 80%, oklch(0.52 0.14 38) 0.5px, transparent 0.5px)",
-                  backgroundSize: "30px 30px, 40px 40px, 20px 20px",
+                    "url(\"data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
                 }}
               />
-              <div className="absolute inset-0 opacity-[0.04]" style={{
-                backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q40 20 30 35 Q20 20 30 5z' fill='none' stroke='%23c2703e' stroke-width='0.5' opacity='0.5'/%3E%3C/svg%3E\")",
-                backgroundSize: "60px 60px",
-              }} />
+              {/* Subtle warm radial highlight */}
+              <div
+                className="absolute inset-0 opacity-30 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 40%, oklch(0.76 0.15 75 / 0.2), transparent 70%)",
+                }}
+              />
               <Wheat className="relative h-8 w-8 text-primary/25 mb-2" />
               <span className="relative text-sm font-serif text-foreground/40 text-center leading-tight">
                 {product}
@@ -382,8 +385,8 @@ function ProductCard({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2 }}
-                className="text-gold font-medium mt-0.5"
-                style={{ fontSize: "11px" }}
+                className="text-gold font-medium mt-1 tracking-[0.12em] uppercase"
+                style={{ fontSize: "10px" }}
               >
                 Added to inquiry
               </motion.p>
@@ -854,7 +857,9 @@ export default function ProductsPage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="mb-10"
               >
-                <div className="flex items-center gap-3 justify-center px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 border border-gold/15 max-w-md mx-auto">
+                <div className="relative flex items-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border/50 max-w-md mx-auto overflow-hidden">
+                  {/* Gold left border accent — matches about section blockquote */}
+                  <div className="absolute left-0 top-3 bottom-3 w-[3px] rounded-full bg-gradient-to-b from-gold to-primary/40" />
                   <div className="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
                     <ShoppingBasket className="h-4.5 w-4.5 text-gold" />
                   </div>
@@ -897,10 +902,14 @@ export default function ProductsPage() {
         <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="text-center mb-10">
-              <h2 className="font-serif text-3xl sm:text-4xl text-foreground mb-4">
-                Product Inquiry
+              <p className="text-xs font-medium tracking-[0.25em] uppercase text-primary mb-4">
+                Get in Touch
+              </p>
+              <h2 className="font-serif text-4xl sm:text-5xl text-foreground mb-4 leading-tight">
+                Product{" "}
+                <span className="text-gold">Inquiry</span>
               </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed">
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-xl mx-auto">
                 Select products above, fill in your details, and we&apos;ll get
                 back to you with samples and pricing.
               </p>
@@ -940,13 +949,21 @@ export default function ProductsPage() {
             className="fixed bottom-0 left-0 right-0 z-50"
           >
             <div
-              className="backdrop-blur-lg border-t-2 border-gold/40"
+              className="relative backdrop-blur-lg border-t-2 border-gold/40 overflow-hidden"
               style={{
                 backgroundColor: "oklch(0.25 0.04 45 / 0.97)",
                 boxShadow:
                   "0 -8px 30px oklch(0.76 0.15 75 / 0.15), 0 -2px 10px oklch(0.15 0.02 45 / 0.3)",
               }}
             >
+              {/* Parchment texture overlay — matches delivery/footer sections */}
+              <div
+                className="absolute inset-0 opacity-[0.04] pointer-events-none"
+                style={{
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
+                }}
+              />
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
                 <FloatingBarPreview
                   selectedProducts={selectedProducts}

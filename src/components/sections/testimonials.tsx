@@ -11,8 +11,7 @@ interface Testimonial {
   business: string;
   suburb: string;
   quote: string;
-  initials: string;
-  initialsBg: string;
+  monogram: string;
 }
 
 const testimonials: Testimonial[] = [
@@ -23,8 +22,7 @@ const testimonials: Testimonial[] = [
     suburb: "Fitzroy",
     quote:
       "We've been ordering from Baked for Sofia for over three years now. The sourdough is hands-down the best we've ever served \u2014 our customers constantly ask where we get our bread. The overnight delivery means it's always fresh when we open.",
-    initials: "SM",
-    initialsBg: "from-primary/20 to-gold/20",
+    monogram: "S",
   },
   {
     name: "James Nguyen",
@@ -33,8 +31,7 @@ const testimonials: Testimonial[] = [
     suburb: "South Melbourne",
     quote:
       "What sets BFS apart is their consistency. Every brioche bun, every croissant, every single time \u2014 the quality never drops. They've been a rock-solid partner for our restaurant.",
-    initials: "JN",
-    initialsBg: "from-sage/20 to-primary/15",
+    monogram: "J",
   },
   {
     name: "Rachel Goldstein",
@@ -43,8 +40,7 @@ const testimonials: Testimonial[] = [
     suburb: "St Kilda",
     quote:
       "Switching to Baked for Sofia was the best decision we made last year. Their gluten-free range actually tastes incredible, and our GF customers can finally enjoy proper bread. Dov and the team truly care.",
-    initials: "RG",
-    initialsBg: "from-gold/20 to-warm",
+    monogram: "R",
   },
   {
     name: "Tom & Lisa Chen",
@@ -53,8 +49,7 @@ const testimonials: Testimonial[] = [
     suburb: "Richmond",
     quote:
       "The Jerusalem bagels are a game-changer. We can't keep them in stock. BFS understood exactly what we needed and even customised sizes for our menu. Real partners, not just suppliers.",
-    initials: "TC",
-    initialsBg: "from-primary/15 to-sage/20",
+    monogram: "T",
   },
   {
     name: "Marcus Webb",
@@ -63,35 +58,118 @@ const testimonials: Testimonial[] = [
     suburb: "Melbourne",
     quote:
       "We serve over 500 events a year and rely on BFS for all our bread and pastry needs. Their delivery has never let us down \u2014 not once in two years. That kind of reliability is rare.",
-    initials: "MW",
-    initialsBg: "from-gold/15 to-primary/20",
+    monogram: "M",
   },
 ];
 
-function StarRating() {
+function GoldStarRating() {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
-          className="h-4 w-4 text-gold fill-gold"
+          className="h-4 w-4 text-gold fill-gold drop-shadow-[0_0_3px_oklch(0.76_0.15_75_/_0.5)]"
         />
       ))}
     </div>
   );
 }
 
-function TestimonialCard({
+function MonogramBadge({ letter }: { letter: string }) {
+  return (
+    <div className="relative flex-shrink-0 w-12 h-12 rotate-3">
+      {/* Gold-bordered square badge, slightly rotated like a wax seal */}
+      <div className="absolute inset-0 rounded-sm border-2 border-gold/50 bg-gradient-to-br from-cream to-warm" />
+      {/* Inner serif monogram */}
+      <span className="relative flex items-center justify-center w-full h-full font-serif text-xl text-primary font-bold">
+        {letter}
+      </span>
+    </div>
+  );
+}
+
+/* ─── Featured (first) testimonial ─── */
+function FeaturedTestimonialCard({
   testimonial,
-  index,
 }: {
   testimonial: Testimonial;
-  index: number;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.92, y: 30 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="md:col-span-2"
+    >
+      <div className="relative h-full rounded-2xl bg-card border border-border/50 p-8 sm:p-10 hover:border-gold/30 hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 overflow-hidden">
+        {/* Parchment noise texture */}
+        <div
+          className="absolute inset-0 opacity-[0.025] pointer-events-none"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
+          }}
+        />
+
+        {/* Gold accent line at top */}
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+
+        {/* Large decorative gold quote mark */}
+        <div className="absolute top-4 right-6 pointer-events-none">
+          <Quote className="h-24 w-24 text-gold/10 fill-gold/5" />
+        </div>
+
+        <div className="relative">
+          <GoldStarRating />
+
+          {/* Larger quote text — italic serif */}
+          <blockquote className="mt-6 mb-8">
+            <p className="font-serif text-foreground leading-relaxed text-xl sm:text-2xl italic">
+              &ldquo;{testimonial.quote}&rdquo;
+            </p>
+          </blockquote>
+
+          {/* Gold connecting line to author */}
+          <div className="w-16 h-px bg-gradient-to-r from-gold/50 to-transparent mb-6" />
+
+          {/* Author */}
+          <div className="flex items-center gap-4">
+            <MonogramBadge letter={testimonial.monogram} />
+            <div>
+              <p className="font-semibold text-foreground text-base">
+                {testimonial.name}
+              </p>
+              <p className="text-muted-foreground text-sm">
+                {testimonial.role}
+              </p>
+              <p className="text-xs font-medium tracking-[0.15em] uppercase text-primary/60 mt-0.5">
+                {testimonial.business} &middot; {testimonial.suburb}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Standard testimonial card ─── */
+function TestimonialCard({
+  testimonial,
+  index,
+  direction = "left",
+}: {
+  testimonial: Testimonial;
+  index: number;
+  direction?: "left" | "right";
+}) {
+  const xOffset = direction === "left" ? -40 : 40;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: xOffset, y: 20 }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{
         duration: 0.6,
@@ -100,45 +178,51 @@ function TestimonialCard({
       }}
       className="group"
     >
-      <div className="relative h-full rounded-2xl bg-card border border-border/50 p-7 sm:p-8 hover:border-gold/25 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300">
-        {/* Decorative quote mark */}
-        <div className="absolute top-5 right-6 opacity-[0.06]">
-          <Quote className="h-16 w-16 text-primary" />
-        </div>
+      <div className="relative h-full rounded-2xl bg-card border border-border/50 p-7 sm:p-8 hover:border-gold/25 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300 overflow-hidden">
+        {/* Parchment noise texture */}
+        <div
+          className="absolute inset-0 opacity-[0.02] pointer-events-none"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
+          }}
+        />
 
         {/* Gold accent line at top */}
         <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
-        {/* Stars */}
-        <StarRating />
+        {/* Subtle quote mark */}
+        <div className="absolute top-4 right-5 pointer-events-none opacity-[0.06]">
+          <Quote className="h-16 w-16 text-primary" />
+        </div>
 
-        {/* Quote */}
-        <blockquote className="mt-4 mb-6 relative">
-          <p className="text-foreground leading-relaxed text-[0.95rem]">
-            &ldquo;{testimonial.quote}&rdquo;
-          </p>
-        </blockquote>
+        <div className="relative">
+          <GoldStarRating />
 
-        {/* Author */}
-        <div className="flex items-center gap-3.5 pt-4 border-t border-border/30">
-          {/* Initials avatar */}
-          <div
-            className={`flex-shrink-0 w-11 h-11 rounded-full bg-gradient-to-br ${testimonial.initialsBg} flex items-center justify-center border border-border/20`}
-          >
-            <span className="text-sm font-semibold text-foreground/70">
-              {testimonial.initials}
-            </span>
-          </div>
-          <div>
-            <p className="font-semibold text-foreground text-sm">
-              {testimonial.name}
+          {/* Quote — serif italic */}
+          <blockquote className="mt-4 mb-6">
+            <p className="font-serif text-foreground leading-relaxed text-base italic">
+              &ldquo;{testimonial.quote}&rdquo;
             </p>
-            <p className="text-muted-foreground text-xs">
-              {testimonial.role}, {testimonial.business}{" "}
-              <span className="text-muted-foreground/60">
-                ({testimonial.suburb})
-              </span>
-            </p>
+          </blockquote>
+
+          {/* Gold thread connector */}
+          <div className="w-10 h-px bg-gradient-to-r from-gold/40 to-transparent mb-5" />
+
+          {/* Author */}
+          <div className="flex items-center gap-3.5">
+            <MonogramBadge letter={testimonial.monogram} />
+            <div>
+              <p className="font-semibold text-foreground text-sm">
+                {testimonial.name}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {testimonial.role}
+              </p>
+              <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-primary/50 mt-0.5">
+                {testimonial.business} &middot; {testimonial.suburb}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -146,6 +230,7 @@ function TestimonialCard({
   );
 }
 
+/* ─── Dramatic stat bar ─── */
 function StatBar() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -156,33 +241,51 @@ function StatBar() {
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mb-12 py-5 px-6 rounded-2xl bg-gradient-to-r from-warm/40 via-cream to-warm/40 border border-border/30"
+      className="relative flex flex-wrap items-center justify-center gap-8 sm:gap-12 mb-14 py-6 px-8 rounded-2xl overflow-hidden"
+      style={{ backgroundColor: "oklch(0.25 0.04 45 / 0.95)" }}
     >
-      <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-          <Users className="h-4 w-4 text-primary" />
+      {/* Parchment texture */}
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
+        }}
+      />
+
+      <div className="relative flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center border border-gold/20">
+          <Users className="h-5 w-5 text-gold" />
         </div>
         <div>
-          <p className="text-2xl font-serif font-bold text-foreground">400+</p>
-          <p className="text-xs text-muted-foreground">Businesses served</p>
+          <p className="text-3xl font-serif font-bold text-gold">400+</p>
+          <p className="text-xs text-white/50 tracking-wide">
+            Businesses served
+          </p>
         </div>
       </div>
-      <div className="hidden sm:block w-px h-10 bg-border/50" />
-      <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center">
-          <Star className="h-4 w-4 text-gold fill-gold" />
+
+      <div className="hidden sm:block w-px h-12 bg-gold/20" />
+
+      <div className="relative flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center border border-gold/20">
+          <Star className="h-5 w-5 text-gold fill-gold" />
         </div>
         <div>
-          <p className="text-2xl font-serif font-bold text-foreground">5.0</p>
-          <p className="text-xs text-muted-foreground">Average rating</p>
+          <p className="text-3xl font-serif font-bold text-gold">5.0</p>
+          <p className="text-xs text-white/50 tracking-wide">
+            Average rating
+          </p>
         </div>
       </div>
-      <div className="hidden sm:block w-px h-10 bg-border/50" />
-      <div className="text-center sm:text-left">
-        <p className="text-sm font-medium text-foreground">
+
+      <div className="hidden sm:block w-px h-12 bg-gold/20" />
+
+      <div className="relative text-center sm:text-left">
+        <p className="text-sm font-medium text-white/90">
           Trusted across Melbourne
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-white/40 tracking-wide">
           Cafes, restaurants &amp; caterers
         </p>
       </div>
@@ -191,9 +294,12 @@ function StatBar() {
 }
 
 export function Testimonials() {
+  const featured = testimonials[0];
+  const rest = testimonials.slice(1);
+
   return (
     <section className="py-24 sm:py-32 bg-background relative overflow-hidden">
-      {/* Subtle decorative elements */}
+      {/* Top decorative line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -203,43 +309,59 @@ export function Testimonials() {
             What Our Partners Say
           </p>
           <h2 className="font-serif text-4xl sm:text-5xl text-foreground mb-4 leading-tight">
-            Trusted by Melbourne&apos;s
+            Voices from Melbourne&apos;s
             <br />
-            <span className="text-primary">Best Businesses</span>
+            <span className="text-gold">Kitchens</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             From neighbourhood cafes to large-scale caterers, hear why businesses
-            across Melbourne choose Baked for Sofia as their bread and pastry partner.
+            across Melbourne choose Baked for Sofia as their bread and pastry
+            partner.
           </p>
         </AnimatedSection>
 
-        {/* Stat bar */}
+        {/* Stat bar — espresso dark with gold numbers */}
         <StatBar />
 
-        {/* Testimonial cards - scrollable on mobile, grid on desktop */}
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-          {testimonials.map((testimonial, i) => (
+        {/* Desktop: staggered editorial layout */}
+        <div className="hidden md:grid md:grid-cols-2 gap-5 lg:gap-6">
+          {/* Featured testimonial — spans 2 columns */}
+          <FeaturedTestimonialCard testimonial={featured} />
+
+          {/* Remaining testimonials — alternating slide directions */}
+          {rest.map((testimonial, i) => (
             <TestimonialCard
               key={testimonial.name}
               testimonial={testimonial}
               index={i}
+              direction={i % 2 === 0 ? "left" : "right"}
             />
           ))}
         </div>
 
-        {/* Mobile horizontal scroll */}
-        <div
-          className="md:hidden flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory"
-          style={{ WebkitOverflowScrolling: "touch" }}
-        >
-          {testimonials.map((testimonial, i) => (
-            <div
-              key={testimonial.name}
-              className="flex-shrink-0 w-[85vw] max-w-sm snap-start"
-            >
-              <TestimonialCard testimonial={testimonial} index={i} />
-            </div>
-          ))}
+        {/* Mobile: featured full-width, rest in horizontal scroll */}
+        <div className="md:hidden space-y-5">
+          {/* Featured card — full width */}
+          <FeaturedTestimonialCard testimonial={featured} />
+
+          {/* Remaining in horizontal scroll */}
+          <div
+            className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            {rest.map((testimonial, i) => (
+              <div
+                key={testimonial.name}
+                className="flex-shrink-0 w-[85vw] max-w-sm snap-start"
+              >
+                <TestimonialCard
+                  testimonial={testimonial}
+                  index={i}
+                  direction="left"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
