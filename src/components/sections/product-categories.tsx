@@ -100,7 +100,7 @@ function TiltCard({ cat, index }: { cat: (typeof categories)[0]; index: number }
         ease: "easeOut",
       }}
     >
-      <Link href="/products">
+      <Link href={`/products#${cat.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}

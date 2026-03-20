@@ -413,7 +413,10 @@ function CategorySection({
   ).length;
 
   return (
-    <section className="py-16 first:pt-0">
+    <section
+      id={category.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}
+      className="py-16 first:pt-0 scroll-mt-24"
+    >
       {/* Category Header */}
       <motion.div
         initial={{ opacity: 0, y: 40, scale: 0.97 }}
