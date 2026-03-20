@@ -23,6 +23,9 @@ import {
   X,
   Send,
   CheckCircle2,
+  Plus,
+  Wheat,
+  Trash2,
 } from "lucide-react";
 
 // ─── Product Image Mappings ──────────────────────────────────────────
@@ -41,11 +44,16 @@ const productImages: Record<string, string> = {
   "Challah Rolls": "/images/products/challah-roll.webp",
   "Ciabatta Rolls": "/images/products/ciabatta-rolls.webp",
   "Coloured Bagels": "/images/products/coloured-bagels.webp",
-  Focaccia: "/images/products/focaccia.webp",
+  "Focaccia": "/images/products/focaccia.webp",
   // Something Different
   "Fruit Buns": "/images/products/fruit-buns.webp",
-  Baguette: "/images/products/baguette.webp",
-  Challah: "/images/products/challah.webp",
+  "Fruit Loaf": "/images/products/fruit-loaf.webp",
+  "Olive Baguette": "/images/products/olive-baguette.webp",
+  "Baguette": "/images/products/baguette.webp",
+  "Pain de Mie": "/images/products/pain-de-mie.webp",
+  "Vegan Tin Loaf": "/images/products/vegan-tin-loaf.webp",
+  "Brioche Tin Loaf": "/images/products/brioche-tin-loaf.webp",
+  "Challah": "/images/products/challah.webp",
   "Facile Baguette": "/images/products/facile-baguette.webp",
   // Sourdough
   "Multigrain Tin Loaf": "/images/products/multigrain-sourdough-tin.webp",
@@ -56,7 +64,7 @@ const productImages: Record<string, string> = {
   "White Tin Loaf": "/images/products/white-sourdough-tin.webp",
   // Jerusalem Bagels
   "All Seeds": "/images/products/jerusalem-bagel-seeds.webp",
-  Sesame: "/images/products/jerusalem-bagel-sesame.webp",
+  "Sesame": "/images/products/jerusalem-bagel-sesame.webp",
   "Poppy Seeds": "/images/products/jerusalem-bagel-poppy.webp",
   // Fresh Baked Cakes
   "Basque Cheesecake": "/images/products/basque-cheesecake.webp",
@@ -73,7 +81,7 @@ const productImages: Record<string, string> = {
   "Apple Frangipane": "/images/products/apple-frangipane.webp",
   "Cinnamon Scroll": "/images/products/cinnamon-scroll.webp",
   "Almond Croissant": "/images/products/almond-croissant.webp",
-  Escargot: "/images/products/escargot.webp",
+  "Escargot": "/images/products/escargot.webp",
   "Chocolate Babka": "/images/products/chocolate-babka.webp",
   "Berry Danish": "/images/products/berry-danish.webp",
   // Gluten Friendly
@@ -281,7 +289,7 @@ function ProductCard({
             : undefined
         }
       >
-        {/* Checkmark badge with pulse on entry */}
+        {/* Checkmark badge (top-right) with pulse on entry */}
         <AnimatePresence>
           {isSelected && (
             <motion.div
@@ -295,6 +303,22 @@ function ProductCard({
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Plus / Check icon overlay (bottom-right) */}
+        <div
+          className={cn(
+            "absolute bottom-12 sm:bottom-14 right-3 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300",
+            isSelected
+              ? "bg-gold shadow-md"
+              : "bg-black/40 backdrop-blur-sm opacity-60 group-hover:opacity-100 group-hover:bg-black/60"
+          )}
+        >
+          {isSelected ? (
+            <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+          ) : (
+            <Plus className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+          )}
+        </div>
 
         {/* Image area */}
         <div className="relative aspect-square overflow-hidden bg-secondary/30">
@@ -324,7 +348,7 @@ function ProductCard({
               </AnimatePresence>
             </>
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-warm to-cream flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-100/80 via-warm to-orange-50/60 flex flex-col items-center justify-center p-4">
               {/* Subtle pattern for no-image cards */}
               <div
                 className="absolute inset-0 opacity-[0.06]"
@@ -338,6 +362,7 @@ function ProductCard({
                 backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q40 20 30 35 Q20 20 30 5z' fill='none' stroke='%23c2703e' stroke-width='0.5' opacity='0.5'/%3E%3C/svg%3E\")",
                 backgroundSize: "60px 60px",
               }} />
+              <Wheat className="relative h-8 w-8 text-primary/25 mb-2" />
               <span className="relative text-sm font-serif text-foreground/40 text-center leading-tight">
                 {product}
               </span>
@@ -350,6 +375,20 @@ function ProductCard({
           <h3 className="text-sm font-medium text-foreground leading-tight">
             {product}
           </h3>
+          <AnimatePresence>
+            {isSelected && (
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="text-gold font-medium mt-0.5"
+                style={{ fontSize: "11px" }}
+              >
+                Added to inquiry
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </motion.button>
     </motion.div>
@@ -688,14 +727,16 @@ function InquiryForm({
 // ─── Floating Bar Product Preview ────────────────────────────────────
 function FloatingBarPreview({
   selectedProducts,
+  onClearAll,
 }: {
   selectedProducts: Set<string>;
+  onClearAll: () => void;
 }) {
   const productsArray = Array.from(selectedProducts);
   const count = productsArray.length;
   if (count === 0) return null;
 
-  const previewNames = productsArray.slice(0, 2);
+  const previewNames = productsArray.slice(0, 3);
   const remaining = count - previewNames.length;
 
   return (
@@ -704,10 +745,20 @@ function FloatingBarPreview({
         <ShoppingBasket className="h-5 w-5 text-gold" />
       </div>
       <div className="min-w-0">
-        <span className="text-sm sm:text-base font-medium text-foreground block truncate">
-          {count} {count === 1 ? "product" : "products"} selected
-        </span>
-        <span className="text-xs text-muted-foreground truncate block max-w-[200px] sm:max-w-[300px]">
+        <div className="flex items-center gap-2">
+          <span className="text-sm sm:text-base font-medium text-white block truncate">
+            {count} {count === 1 ? "product" : "products"}
+          </span>
+          <button
+            type="button"
+            onClick={onClearAll}
+            className="hidden sm:inline-flex items-center gap-1 text-xs text-gold/70 hover:text-gold transition-colors flex-shrink-0"
+          >
+            <Trash2 className="h-3 w-3" />
+            Clear All
+          </button>
+        </div>
+        <span className="hidden sm:block text-xs text-white/50 truncate max-w-[300px]">
           {previewNames.join(", ")}
           {remaining > 0 && ` +${remaining} more`}
         </span>
@@ -721,6 +772,7 @@ export default function ProductsPage() {
   const [selectedProducts, setSelectedProducts] = useState<Set<string>>(
     new Set()
   );
+  const [hasEverSelected, setHasEverSelected] = useState(false);
 
   const toggleProduct = useCallback((product: string) => {
     setSelectedProducts((prev) => {
@@ -732,6 +784,7 @@ export default function ProductsPage() {
       }
       return next;
     });
+    setHasEverSelected(true);
   }, []);
 
   const removeProduct = useCallback((product: string) => {
@@ -740,6 +793,10 @@ export default function ProductsPage() {
       next.delete(product);
       return next;
     });
+  }, []);
+
+  const clearAllProducts = useCallback(() => {
+    setSelectedProducts(new Set());
   }, []);
 
   const scrollToInquiry = useCallback(() => {
@@ -784,6 +841,28 @@ export default function ProductsPage() {
       {/* Product Categories */}
       <section className="py-20 bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Instruction banner — dismisses after first selection */}
+          <AnimatePresence>
+            {!hasEverSelected && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10, transition: { duration: 0.3 } }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mb-10"
+              >
+                <div className="flex items-center gap-3 justify-center px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 border border-gold/15 max-w-md mx-auto">
+                  <div className="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+                    <ShoppingBasket className="h-4.5 w-4.5 text-gold" />
+                  </div>
+                  <p className="text-sm text-foreground/70 leading-snug">
+                    Tap any product to add it to your inquiry
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="divide-y divide-border/30">
             {categories.map((cat, i) => (
               <CategorySection
@@ -858,14 +937,18 @@ export default function ProductsPage() {
             className="fixed bottom-0 left-0 right-0 z-50"
           >
             <div
-              className="bg-card/95 backdrop-blur-lg border-t-2 border-gold/40"
+              className="backdrop-blur-lg border-t-2 border-gold/40"
               style={{
+                backgroundColor: "oklch(0.25 0.04 45 / 0.97)",
                 boxShadow:
-                  "0 -8px 30px oklch(0.76 0.15 75 / 0.1), 0 -2px 10px oklch(0.25 0.04 45 / 0.08)",
+                  "0 -8px 30px oklch(0.76 0.15 75 / 0.15), 0 -2px 10px oklch(0.15 0.02 45 / 0.3)",
               }}
             >
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
-                <FloatingBarPreview selectedProducts={selectedProducts} />
+                <FloatingBarPreview
+                  selectedProducts={selectedProducts}
+                  onClearAll={clearAllProducts}
+                />
                 <motion.button
                   type="button"
                   onClick={scrollToInquiry}
@@ -886,7 +969,8 @@ export default function ProductsPage() {
                     "rounded-full px-6 sm:px-8 text-sm sm:text-base flex-shrink-0 min-h-[44px]"
                   )}
                 >
-                  Send Inquiry
+                  <span className="sm:hidden">Send Inquiry</span>
+                  <span className="hidden sm:inline">Send Inquiry</span>
                 </motion.button>
               </div>
             </div>

@@ -45,7 +45,9 @@
       "Bash(grep -v \"^[[:space:]]*$\")",
       "Bash(python3 -c \"import json,sys; print\\(json.dumps\\(json.load\\(sys.stdin\\), indent=2\\)\\)\")",
       "Bash(python3:*)",
-      "Bash(ls -la ~/Downloads/dov* ~/Downloads/Dov* ~/Downloads/founder* ~/Downloads/IMG* ~/Downloads/image*)"
+      "Bash(ls -la ~/Downloads/dov* ~/Downloads/Dov* ~/Downloads/founder* ~/Downloads/IMG* ~/Downloads/image*)",
+      "Read(//tmp/bfs-audit/**)",
+      "Read(//private/tmp/bfs-audit/**)"
     ],
     "additionalDirectories": [
       "/Users/alonmoshe/Downloads"
