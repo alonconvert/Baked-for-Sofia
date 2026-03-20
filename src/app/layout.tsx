@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { dmSans, dmSerifDisplay } from "@/lib/fonts";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { PriceListProvider } from "@/components/price-list-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1 relative z-10">{children}</main>
         <Footer />
+        <PriceListProvider />
       </body>
     </html>
   );

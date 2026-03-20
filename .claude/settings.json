@@ -41,7 +41,10 @@
       "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2024/09/Challah-Roll-1-250x300.jpg.webp\" -o challah-roll.webp)",
       "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/Coloured-bagels-250x300.png.webp\" -o coloured-bagels.webp)",
       "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/Multigrain-Roll-Gluten-free-250x300.png.webp\" -o gf-multigrain-loaf.webp)",
-      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/All-seeds-Panini-roll-250x300.png.webp\" -o seeded-panini.webp)"
+      "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/All-seeds-Panini-roll-250x300.png.webp\" -o seeded-panini.webp)",
+      "Bash(grep -v \"^[[:space:]]*$\")",
+      "Bash(python3 -c \"import json,sys; print\\(json.dumps\\(json.load\\(sys.stdin\\), indent=2\\)\\)\")",
+      "Bash(python3:*)"
     ]
   }
 }

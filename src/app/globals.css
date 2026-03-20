@@ -199,3 +199,19 @@ body::before {
 .text-balance {
   text-wrap: balance;
 }
+
+/* Floating price orb gradient rotation */
+@property --orb-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes orbRotate {
+  from {
+    --orb-angle: 0deg;
+  }
+  to {
+    --orb-angle: 360deg;
+  }
+}
