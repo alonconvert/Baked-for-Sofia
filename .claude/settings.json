@@ -44,7 +44,11 @@
       "Bash(curl -sL \"https://www.bakedforsofia.com/wp-content/uploads/2023/02/All-seeds-Panini-roll-250x300.png.webp\" -o seeded-panini.webp)",
       "Bash(grep -v \"^[[:space:]]*$\")",
       "Bash(python3 -c \"import json,sys; print\\(json.dumps\\(json.load\\(sys.stdin\\), indent=2\\)\\)\")",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(ls -la ~/Downloads/dov* ~/Downloads/Dov* ~/Downloads/founder* ~/Downloads/IMG* ~/Downloads/image*)"
+    ],
+    "additionalDirectories": [
+      "/Users/alonmoshe/Downloads"
     ]
   }
 }

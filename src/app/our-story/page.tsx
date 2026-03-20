@@ -195,8 +195,8 @@ export default function OurStoryPage() {
               <div className="md:col-span-2">
                 <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl border-2 border-warm ring-1 ring-gold/20 ring-offset-4 ring-offset-background">
                   <Image
-                    src="/images/homepage/founder.jpg"
-                    alt="Dov & Immy Lachovich Marcus, Founders of Baked for Sofia"
+                    src="/images/homepage/dov-founder.webp"
+                    alt="Dov Lachovich Marcus, founder of Baked for Sofia, breaking artisan sourdough"
                     fill
                     sizes="(max-width: 768px) 100vw, 40vw"
                     className="object-cover animate-ken-burns"

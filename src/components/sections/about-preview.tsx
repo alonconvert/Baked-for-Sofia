@@ -139,11 +139,11 @@ export function AboutPreview() {
               <div className="space-y-5">
                 {/* Stacked image layout */}
                 <div className="relative">
-                  {/* Main product display image */}
-                  <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-border/30 shadow-lg">
+                  {/* Founder Dov breaking bread */}
+                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] border border-border/30 shadow-lg">
                     <Image
-                      src="/images/homepage/product-display.webp"
-                      alt="Baked for Sofia product display"
+                      src="/images/homepage/dov-founder.webp"
+                      alt="Dov Lachovich Marcus, founder of Baked for Sofia, breaking artisan sourdough"
                       fill
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       className="object-cover"
@@ -151,7 +151,7 @@ export function AboutPreview() {
                     />
                   </div>
                   {/* Secondary bakery detail image overlapping */}
-                  <div className="absolute -bottom-6 -left-4 sm:-left-6 w-36 sm:w-44 aspect-square rounded-2xl overflow-hidden border-4 border-background shadow-xl">
+                  <div className="absolute -bottom-6 -right-4 sm:-right-6 w-36 sm:w-44 aspect-square rounded-2xl overflow-hidden border-4 border-background shadow-xl">
                     <Image
                       src="/images/homepage/bakery-detail.webp"
                       alt="Artisan bakery detail"
