@@ -248,8 +248,18 @@ function ProductCard({
 }) {
   const imageSrc = productImages[product];
 
+  // Cascading wave: use row position for stagger
+  const row = Math.floor(index / 4);
+  const col = index % 4;
+  const waveDelay = row * 0.08 + col * 0.05;
+
   return (
-    <AnimatedSection delay={index * 0.04}>
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, delay: waveDelay, ease: "easeOut" }}
+    >
       <motion.button
         type="button"
         onClick={() => onToggle(product)}
@@ -342,7 +352,7 @@ function ProductCard({
           </h3>
         </div>
       </motion.button>
-    </AnimatedSection>
+    </motion.div>
   );
 }
 
@@ -366,16 +376,21 @@ function CategorySection({
   return (
     <section className="py-16 first:pt-0">
       {/* Category Header */}
-      <AnimatedSection delay={index * 0.05}>
+      <motion.div
+        initial={{ opacity: 0, y: 40, scale: 0.97 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.7, delay: index * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
         <div className="relative mb-10 rounded-3xl overflow-hidden">
-          {/* Background image with warm overlay */}
-          <div className="relative h-48 sm:h-56 lg:h-64">
+          {/* Background image with warm overlay + subtle parallax via CSS */}
+          <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
             {heroImage && (
               <Image
                 src={heroImage}
                 alt={category.name}
                 fill
-                className="object-cover"
+                className="object-cover scale-110 transition-transform duration-[2s] ease-out hover:scale-100"
                 sizes="100vw"
               />
             )}
@@ -405,7 +420,7 @@ function CategorySection({
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </motion.div>
 
       {/* Product Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { AnimatedSection } from "@/components/animated-section";
+import { useRef, MouseEvent } from "react";
 
 const categories = [
   {
@@ -64,6 +65,90 @@ const categories = [
   },
 ];
 
+function TiltCard({ cat, index }: { cat: (typeof categories)[0]; index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springRotateX = useSpring(rotateX, { stiffness: 300, damping: 30 });
+  const springRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    rotateX.set((y - centerY) / centerY * -6);
+    rotateY.set((x - centerX) / centerX * 6);
+  };
+
+  const handleMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{
+        duration: 0.5,
+        delay: index * 0.08,
+        ease: "easeOut",
+      }}
+    >
+      <Link href="/products">
+        <motion.div
+          ref={cardRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            rotateX: springRotateX,
+            rotateY: springRotateY,
+            perspective: 800,
+            transformStyle: "preserve-3d",
+          }}
+          whileHover={{ y: -6, scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="group rounded-2xl overflow-hidden bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-black/10"
+        >
+          {/* Image hero area */}
+          <div className="relative h-52 sm:h-56 lg:h-52 xl:h-56 overflow-hidden">
+            <Image
+              src={cat.image}
+              alt={cat.name}
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+            />
+            {/* Gradient overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+            {/* Shine overlay on hover */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/10 group-hover:to-white/5 transition-all duration-700" />
+            {/* Text overlay on image */}
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-white bg-gold/80 backdrop-blur-sm px-2.5 py-1 rounded-full mb-2 shadow-sm">
+                {cat.highlight}
+              </span>
+              <h3 className="text-lg font-semibold text-white leading-tight">
+                {cat.name}
+              </h3>
+            </div>
+          </div>
+          {/* Description below */}
+          <div className="p-4">
+            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+              {cat.description}
+            </p>
+          </div>
+        </motion.div>
+      </Link>
+    </motion.div>
+  );
+}
+
 export function ProductCategories() {
   return (
     <section className="py-24 sm:py-32 bg-cream/50">
@@ -73,9 +158,15 @@ export function ProductCategories() {
             <p className="text-xs font-medium tracking-[0.25em] uppercase text-primary mb-3">
               Our Range
             </p>
-            <h2 className="font-serif text-4xl sm:text-5xl text-foreground">
+            <motion.h2
+              className="font-serif text-4xl sm:text-5xl text-foreground overflow-hidden"
+              initial={{ clipPath: "inset(0 100% 0 0)" }}
+              whileInView={{ clipPath: "inset(0 0% 0 0)" }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            >
               Product Categories
-            </h2>
+            </motion.h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
               From artisan sourdough to delicate pastries, explore our full range
               of handcrafted baked goods.
@@ -85,44 +176,7 @@ export function ProductCategories() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {categories.map((cat, i) => (
-            <AnimatedSection key={cat.name} delay={i * 0.08}>
-              <Link href="/products">
-                <motion.div
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="group rounded-2xl overflow-hidden bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-black/10"
-                >
-                  {/* Image hero area */}
-                  <div className="relative h-52 sm:h-56 lg:h-52 xl:h-56 overflow-hidden">
-                    <Image
-                      src={cat.image}
-                      alt={cat.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
-                    />
-                    {/* Gradient overlay for text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                    {/* Shine overlay on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/10 group-hover:to-white/5 transition-all duration-700" />
-                    {/* Text overlay on image */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-white bg-gold/80 backdrop-blur-sm px-2.5 py-1 rounded-full mb-2 shadow-sm">
-                        {cat.highlight}
-                      </span>
-                      <h3 className="text-lg font-semibold text-white leading-tight">
-                        {cat.name}
-                      </h3>
-                    </div>
-                  </div>
-                  {/* Description below */}
-                  <div className="p-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                      {cat.description}
-                    </p>
-                  </div>
-                </motion.div>
-              </Link>
-            </AnimatedSection>
+            <TiltCard key={cat.name} cat={cat} index={i} />
           ))}
         </div>
 

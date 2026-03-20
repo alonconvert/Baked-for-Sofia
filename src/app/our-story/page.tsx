@@ -13,6 +13,8 @@ import {
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const values = [
   {
@@ -74,6 +76,27 @@ const timeline = [
   },
 ];
 
+function AnimatedTimelineLine() {
+  const lineRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: lineRef,
+    offset: ["start center", "end center"],
+  });
+  const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return (
+    <div ref={lineRef} className="absolute left-6 md:left-1/2 top-0 bottom-0 md:-translate-x-px">
+      {/* Static track */}
+      <div className="w-px h-full bg-border/30" />
+      {/* Animated fill */}
+      <motion.div
+        className="absolute top-0 left-0 w-px bg-gradient-to-b from-gold via-primary/60 to-gold/30"
+        style={{ height }}
+      />
+    </div>
+  );
+}
+
 export default function OurStoryPage() {
   return (
     <>
@@ -107,28 +130,34 @@ export default function OurStoryPage() {
       {/* Founding Story */}
       <section className="py-24 bg-background">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30 border-b-2 border-b-gold/30">
-                <p className="font-serif text-6xl font-bold tracking-tight text-primary">2015</p>
-                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-3">
-                  Year founded
+          {/* Stat cards with flip/scale entrance */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {[
+              { value: "2015", label: "Year founded", color: "text-primary" },
+              { value: "25sqm", label: "Where it started", color: "text-gold" },
+              { value: "400+", label: "Customers today", color: "text-primary" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.value}
+                initial={{ opacity: 0, scale: 0.7, rotateY: -30 }}
+                whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{
+                  duration: 0.6,
+                  delay: i * 0.12,
+                  ease: "easeOut",
+                }}
+                className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30 border-b-2 border-b-gold/30"
+              >
+                <p className={`font-serif text-6xl font-bold tracking-tight ${stat.color}`}>
+                  {stat.value}
                 </p>
-              </div>
-              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30 border-b-2 border-b-gold/30">
-                <p className="font-serif text-6xl font-bold tracking-tight text-gold">25sqm</p>
                 <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-3">
-                  Where it started
+                  {stat.label}
                 </p>
-              </div>
-              <div className="bg-gradient-to-br from-warm to-cream rounded-3xl p-8 text-center border border-border/30 border-b-2 border-b-gold/30">
-                <p className="font-serif text-6xl font-bold tracking-tight text-primary">400+</p>
-                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground mt-3">
-                  Customers today
-                </p>
-              </div>
-            </div>
-          </AnimatedSection>
+              </motion.div>
+            ))}
+          </div>
 
           <AnimatedSection delay={0.1}>
             <div className="space-y-6">
@@ -159,10 +188,10 @@ export default function OurStoryPage() {
             </div>
           </AnimatedSection>
 
-          {/* Founders — larger, editorial layout */}
+          {/* Founders -- larger, editorial layout */}
           <AnimatedSection delay={0.2}>
             <div className="mt-20 grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
-              {/* Founder photo — large and prominent */}
+              {/* Founder photo -- Ken Burns slow zoom */}
               <div className="md:col-span-2">
                 <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl border-2 border-warm ring-1 ring-gold/20 ring-offset-4 ring-offset-background">
                   <Image
@@ -170,7 +199,7 @@ export default function OurStoryPage() {
                     alt="Dov & Immy Lachovich Marcus, Founders of Baked for Sofia"
                     fill
                     sizes="(max-width: 768px) 100vw, 40vw"
-                    className="object-cover"
+                    className="object-cover animate-ken-burns"
                   />
                 </div>
               </div>
@@ -226,15 +255,29 @@ export default function OurStoryPage() {
           </AnimatedSection>
 
           <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold/30 via-border/60 to-gold/30 md:-translate-x-px" />
+            {/* Animated vertical line */}
+            <AnimatedTimelineLine />
 
             <div className="space-y-12">
               {timeline.map((item, i) => (
-                <AnimatedSection
+                <motion.div
                   key={item.year}
-                  delay={i * 0.15}
-                  direction={i % 2 === 0 ? "left" : "right"}
+                  initial={{
+                    opacity: 0,
+                    x: i % 2 === 0 ? -60 : 60,
+                    y: 20,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    x: 0,
+                    y: 0,
+                  }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{
+                    duration: 0.7,
+                    delay: i * 0.15,
+                    ease: [0.25, 0.46, 0.45, 0.94],
+                  }}
                 >
                   <div
                     className={`relative flex items-start gap-6 md:gap-12 ${
@@ -274,14 +317,14 @@ export default function OurStoryPage() {
                       </div>
                     </div>
                   </div>
-                </AnimatedSection>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Values — with bakery image accent */}
+      {/* Values -- with staggered rotation entrance */}
       <section className="py-24 bg-background relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
@@ -297,8 +340,26 @@ export default function OurStoryPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {values.map((item, i) => (
-              <AnimatedSection key={item.title} delay={i * 0.1}>
-                <div className="bg-card rounded-2xl border border-border/50 p-7 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group">
+              <motion.div
+                key={item.title}
+                initial={{
+                  opacity: 0,
+                  y: 40,
+                  rotate: (i % 2 === 0 ? -3 : 3),
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  rotate: 0,
+                }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: 0.6,
+                  delay: i * 0.1,
+                  ease: "easeOut",
+                }}
+              >
+                <div className="bg-card rounded-2xl border border-border/50 p-7 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group h-full">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-gold/10 mb-5 group-hover:scale-105 transition-transform">
                     <item.icon className="h-6 w-6 text-primary" />
                   </div>
@@ -309,13 +370,13 @@ export default function OurStoryPage() {
                     {item.text}
                   </p>
                 </div>
-              </AnimatedSection>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Supporting Local — with bakery-bread image background */}
+      {/* Supporting Local -- with bakery-bread image background */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
